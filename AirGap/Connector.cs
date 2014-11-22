@@ -2,9 +2,9 @@
 {
     public class Connector
     {
-        public void Connect<T>(ISourceModule<T> source, ISinkModule<T> sink)
+        public SemiConnectedConnector<T> Connect<T>(ISourceModule<T> source)
         {
-            
+            return new SemiConnectedConnector<T>(source);
         }
     }
 }

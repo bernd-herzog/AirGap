@@ -29,8 +29,15 @@ namespace AirGap
             var floatToComplex = new FloatToComplex();
             var muliply = new Multiply();
 
-            connector.Connect<float>(audioSource, floatToComplex);
-            connector.Connect(floatToComplex, muliply);
+            connector.Connect(audioSource).To(floatToComplex).To(muliply);
+
+
+            // Senden:
+            // Daten -> Bits -> bytes_to_syms -> interp_fir_filter_fff -> 
+            //   frequency_modulator_fc -> multiply_const_cc -> Multiply -> 
+            //   Decomplex -> Lautsprecher
+
+
 
 
             //Application.Run(new Form1());

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AirGap
 {
-    interface IModule<TIn, TOut> : ISinkModule<TIn>, ISourceModule<TOut>
+    public interface IModule<TIn, TOut> : ISinkModule<TIn>, ISourceModule<TOut>
     {
     }
 }

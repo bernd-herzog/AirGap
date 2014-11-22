@@ -53,6 +53,7 @@
     <Compile Include="ISinkModule.cs" />
     <Compile Include="ISourceModule.cs" />
     <Compile Include="Queue\SyncronizedQueue.cs" />
+    <Compile Include="SemiConnectedConnector.cs" />
     <Compile Include="Signal\ClockRecovery.cs" />
     <Compile Include="Signal\Complex.cs" />
     <Compile Include="Signal\ComplexToFloat.cs" />
