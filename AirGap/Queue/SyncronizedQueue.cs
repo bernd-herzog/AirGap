@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AirGap
+namespace AirGap.Queue
 {
-    interface IModule<TIn, TOut> : ISinkModule<TIn>, ISourceModule<TOut>
+    public class SyncronizedQueue<T>: Queue<T>
     {
     }
 }

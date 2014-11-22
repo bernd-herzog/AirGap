@@ -25,6 +25,7 @@ namespace AirGap
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            //TODO: nach AudioSource verschieben
             try
             {
                 WaveFormat wf = new WaveFormat();

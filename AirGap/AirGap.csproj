@@ -48,9 +48,15 @@
     <Compile Include="Bits\BinarySlicer.cs" />
     <Compile Include="Bits\BitsToBytes.cs" />
     <Compile Include="Bits\BytesToBits.cs" />
+    <Compile Include="Connector.cs" />
     <Compile Include="IModule.cs" />
+    <Compile Include="ISinkModule.cs" />
+    <Compile Include="ISourceModule.cs" />
+    <Compile Include="Queue\SyncronizedQueue.cs" />
     <Compile Include="Signal\ClockRecovery.cs" />
+    <Compile Include="Signal\Complex.cs" />
     <Compile Include="Signal\ComplexToFloat.cs" />
+    <Compile Include="Signal\FirFilter.cs" />
     <Compile Include="Signal\FloatToComplex.cs" />
     <Compile Include="FormGap.cs">
       <SubType>Form</SubType>
