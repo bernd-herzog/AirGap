@@ -31,5 +31,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		BandPassFilter_ReportData = &SimpleToComplex_OnData;
 	}
 
+	AudioSource_Work();
+
 	return 0;
 }

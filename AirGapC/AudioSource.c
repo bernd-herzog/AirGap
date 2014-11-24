@@ -1,10 +1,10 @@
 #include "AudioSource.h"
 
 extern void(*AudioSource_ReportData)(short *);
+extern void AudioSource_Work();
 
 
-
-void work()
+void AudioSource_Work()
 {
 	short someSamples[512];
 
