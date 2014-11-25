@@ -2,6 +2,8 @@
 
 #define WIN32_LEAN_AND_MEAN             // Selten verwendete Teile der Windows-Header nicht einbinden.
 
+#define CONNECT(source ,target) source ## _ ## ReportData = &target ## _ ## OnData
+
 #include <windows.h>
 
 #include <stdlib.h>
@@ -12,7 +14,17 @@
 #include "AudioSource.h"
 #include "BandPassFilter.h"
 #include "SimpleToComplex.h"
-
+#include "Multiply.h"
+#include "QuadraturDemodulator.h"
+#include "ClockRecovery.h"
+#include "BinarySlicer.h"
+#include "FileSink.h"
+#include "FileSource.h"
+#include "BitToSymbol.h"
+#include "FirFilter.h"
+#include "FrequencyModulator.h"
+#include "ComplexToSimple.h"
+#include "AudioSink.h"
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -27,11 +39,28 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	BOOL isReceiver = TRUE;
 
 	if (isReceiver){
-		AudioSource_ReportData = &BandPassFilter_OnData;
-		BandPassFilter_ReportData = &SimpleToComplex_OnData;
+		CONNECT(AudioSource, BandPassFilter);
+		CONNECT(BandPassFilter, SimpleToComplex);
+		CONNECT(SimpleToComplex, Multiply);
+		CONNECT(Multiply, QuadraturDemodulator);
+		CONNECT(QuadraturDemodulator, ClockRecovery);
+		CONNECT(ClockRecovery, BinarySlicer);
+		CONNECT(BinarySlicer, FileSink);
+
+		AudioSource_Work();
+	}
+	else
+	{
+		CONNECT(FileSource, BitToSymbol);
+		CONNECT(BitToSymbol, FirFilter);
+		CONNECT(FirFilter, FrequencyModulator);
+		CONNECT(FrequencyModulator, Multiply);
+		CONNECT(Multiply, ComplexToSimple);
+		CONNECT(ComplexToSimple, AudioSink);
+
+		FileSource_Work();
 	}
 
-	AudioSource_Work();
 
 	return 0;
 }

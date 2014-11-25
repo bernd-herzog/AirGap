@@ -76,16 +76,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioSink.c" />
     <ClCompile Include="AudioSource.c" />
     <ClCompile Include="BandPassFilter.c" />
+    <ClCompile Include="BinarySlicer.c" />
+    <ClCompile Include="BitToSymbol.c" />
+    <ClCompile Include="ClockRecovery.c" />
+    <ClCompile Include="ComplexToSimple.c" />
+    <ClCompile Include="FileSink.c" />
+    <ClCompile Include="FileSource.c" />
+    <ClCompile Include="FirFilter.c" />
+    <ClCompile Include="FrequencyModulator.c" />
     <ClCompile Include="main_windows.c" />
+    <ClCompile Include="Multiply.c" />
+    <ClCompile Include="QuadraturDemodulator.c" />
     <ClCompile Include="SimpleToComplex.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioSink.h" />
     <ClInclude Include="AudioSource.h" />
     <ClInclude Include="BandPassFilter.h" />
+    <ClInclude Include="BinarySlicer.h" />
+    <ClInclude Include="BitToSymbol.h" />
+    <ClInclude Include="ClockRecovery.h" />
     <ClInclude Include="Complex.h" />
+    <ClInclude Include="ComplexToSimple.h" />
+    <ClInclude Include="FileSink.h" />
+    <ClInclude Include="FileSource.h" />
+    <ClInclude Include="FirFilter.h" />
+    <ClInclude Include="FrequencyModulator.h" />
     <ClInclude Include="interface.h" />
+    <ClInclude Include="Multiply.h" />
+    <ClInclude Include="QuadraturDemodulator.h" />
     <ClInclude Include="SimpleToComplex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
