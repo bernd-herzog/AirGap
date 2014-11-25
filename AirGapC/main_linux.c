@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
-#include <tchar.h>
 
 #define CONNECT(source ,target) source ## _ ## ReportData = &target ## _ ## OnData
 
