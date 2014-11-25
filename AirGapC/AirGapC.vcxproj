@@ -87,6 +87,9 @@
     <ClCompile Include="FileSource.c" />
     <ClCompile Include="FirFilter.c" />
     <ClCompile Include="FrequencyModulator.c" />
+    <ClCompile Include="main_linux.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="main_windows.c" />
     <ClCompile Include="Multiply.c" />
     <ClCompile Include="QuadraturDemodulator.c" />
