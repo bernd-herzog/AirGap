@@ -1,2 +1,4 @@
-void(*QuadraturDemodulator_ReportData)(short *);
-void QuadraturDemodulator_OnData(short *data);
+#include "Complex.h"
+
+void(*QuadraturDemodulator_ReportData)(float *);
+void QuadraturDemodulator_OnData(Complex *data);

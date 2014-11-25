@@ -10,6 +10,8 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <stdbool.h>
+
 
 #include "AudioSource.h"
 #include "BandPassFilter.h"
@@ -36,7 +38,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	UNREFERENCED_PARAMETER(nCmdShow);
 
-	BOOL isReceiver = TRUE;
+	bool isReceiver = true;
 
 	if (isReceiver){
 		CONNECT(AudioSource, BandPassFilter);
