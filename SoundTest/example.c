@@ -367,7 +367,7 @@ HRESULT RecordCapturedData()
     if( FAILED( hr = g_pDSBCapture->GetCurrentPosition( &dwCapturePos, &dwReadPos ) ) )
         return hr;
 
-    lLockSize = dwReadPos - g_dwNextCaptureOffset;
+	lLockSize = dwReadPos - g_dwNextCaptureOffset;
     if( lLockSize < 0 )
         lLockSize += g_dwCaptureBufferSize;
 

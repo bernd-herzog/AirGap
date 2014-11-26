@@ -6,6 +6,9 @@
 
 #include <dsound.h>
 
+#define BUFFER_SIZE (1024*128)
+#define numbuffers 8
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -28,7 +31,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	memset(&bufferDescription, 0, sizeof(DSCBUFFERDESC));
 	bufferDescription.dwSize = sizeof(DSCBUFFERDESC);
 	bufferDescription.dwFlags = DSCBCAPS_WAVEMAPPED;
-	bufferDescription.dwBufferBytes = 512;
+	bufferDescription.dwBufferBytes = BUFFER_SIZE;
 
 	bufferDescription.lpwfxFormat = &waveformat;
 	bufferDescription.dwFXCount = 0;
@@ -38,7 +41,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	Sleep(50);
 
-	void *pData1;
+	void *pData1=0;
 	void *pData2;
 
 	DWORD len1, len2;
@@ -48,30 +51,59 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	HANDLE event = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-	DSBPOSITIONNOTIFY positionNotify[2];
-	positionNotify[0].dwOffset = 0;
-	positionNotify[0].hEventNotify = event;
 
-	positionNotify[1].dwOffset = 256;
-	positionNotify[1].hEventNotify = event;
+	DSBPOSITIONNOTIFY positionNotify[numbuffers];
+
+	for (int i = 0; i < numbuffers; i++)
+	{
+		positionNotify[i].dwOffset = (BUFFER_SIZE / numbuffers * (i + 1)) - 1;
+		positionNotify[i].hEventNotify = event;
+
+	}
 
 
-	notify->SetNotificationPositions(2, positionNotify);
+	notify->SetNotificationPositions(numbuffers , positionNotify);
 
 
 	captureBuffer->Start(DSCBSTART_LOOPING);
 
-	
+	int i = 0;
+	int caputureOffset = 0;
 	while (true)
 	{
 		DWORD dwResult = MsgWaitForMultipleObjects(1, &event, FALSE, INFINITE, QS_ALLEVENTS);
 		if (dwResult == WAIT_OBJECT_0)
 		{
-			captureBuffer->Lock(0, 128, &pData1, &len1, &pData2, &len2, 0L);
-			//printf("%X %X %X %X\n", ((char *)pData1)[0], ((char *)pData1)[1], ((char *)pData1)[2], ((char *)pData1)[3]);
-			captureBuffer->Unlock(&pData1, len1, &pData2, len2);
-		}
+			DWORD capturePosition = 0, readPosition = 0;
 
+			captureBuffer->GetCurrentPosition(&capturePosition, &readPosition);
+
+			int lockSize = readPosition - caputureOffset;
+			if (lockSize < 0)
+				lockSize += BUFFER_SIZE;
+
+			lockSize -= (lockSize % (BUFFER_SIZE / numbuffers));
+
+			caputureOffset = readPosition - readPosition % (BUFFER_SIZE / numbuffers) - (BUFFER_SIZE / numbuffers);
+			if (caputureOffset < 0)
+				caputureOffset += BUFFER_SIZE;
+
+			HRESULT res = captureBuffer->Lock(caputureOffset, lockSize, &pData1, &len1, &pData2, &len2, 0L);
+
+			if (pData1)
+			{
+				printf("%d\t%d\t%d\n", i, caputureOffset, lockSize);
+			}
+			else{
+			}
+			res = captureBuffer->Unlock(pData1, len1, pData2, len2);
+
+			caputureOffset += len1;
+			caputureOffset %= BUFFER_SIZE; // Circular buffer
+
+
+		}
+		i++;
 	}
 
 
