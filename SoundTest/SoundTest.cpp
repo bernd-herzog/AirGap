@@ -41,7 +41,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	Sleep(50);
 
-	void *pData1=0;
+	void *pData1 = 0;
 	void *pData2;
 
 	DWORD len1, len2;
