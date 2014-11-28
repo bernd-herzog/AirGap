@@ -1,2 +1,4 @@
-void(*ClockRecovery_ReportData)(short *);
-void ClockRecovery_OnData(float *data);
+#include "DataTypes.h"
+
+void(*ClockRecovery_ReportData)(FloatPackage);
+void ClockRecovery_OnData(FloatPackage);

@@ -1,4 +1,4 @@
 #include "Complex.h"
 
-void(*QuadraturDemodulator_ReportData)(float *);
-void QuadraturDemodulator_OnData(Complex *data);
+void(*QuadraturDemodulator_ReportData)(FloatPackage);
+void QuadraturDemodulator_OnData(ComplexPackage);

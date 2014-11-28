@@ -13,7 +13,7 @@ extern void AudioSource_Work();
 
 void InitInput();
 void RunLoop();
-shortPackage ReadData();
+ShortPackage ReadData();
 bool WaitForData();
 
 HANDLE g_event;
@@ -89,7 +89,7 @@ void RunLoop()
 
 		if (hasData)
 		{
-			shortPackage data = ReadData();
+			ShortPackage data = ReadData();
 
 			AudioSource_ReportData(data);
 
@@ -104,7 +104,7 @@ bool WaitForData()
 	return dwResult == WAIT_OBJECT_0;
 }
 
-shortPackage ReadData()
+ShortPackage ReadData()
 {
 	static int caputureOffset = 0;
 
@@ -138,7 +138,7 @@ shortPackage ReadData()
 	caputureOffset += len1;
 	caputureOffset %= BUFFER_SIZE; // Circular buffer
 
-	shortPackage ret;
+	ShortPackage ret;
 	ret.count = len1;
 	ret.data = data;
 

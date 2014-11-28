@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 typedef struct {
 	float i;
 	float q;
@@ -19,4 +21,9 @@ typedef struct {
 	Complex *data;
 	unsigned int count;
 } ComplexPackage;
+
+typedef struct {
+	bool *data;
+	unsigned int count;
+} BoolPackage;
 

@@ -1,2 +1,4 @@
-void(*BinarySlicer_ReportData)(short *);
-void BinarySlicer_OnData(short *data);
+#include "DataTypes.h"
+
+void(*BinarySlicer_ReportData)(BoolPackage);
+void BinarySlicer_OnData(FloatPackage);

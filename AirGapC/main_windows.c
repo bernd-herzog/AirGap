@@ -12,7 +12,6 @@
 #include <tchar.h>
 #include <stdbool.h>
 
-
 #include "AudioSource.h"
 #include "BandPassFilter.h"
 #include "SimpleToComplex.h"
@@ -27,6 +26,8 @@
 #include "FrequencyModulator.h"
 #include "ComplexToSimple.h"
 #include "AudioSink.h"
+#include "ShortToFloat.h"
+#include "DcBlocker.h"
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -41,10 +42,13 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	bool isReceiver = true;
 
 	if (isReceiver){
-		CONNECT(AudioSource, BandPassFilter);
-		CONNECT(BandPassFilter, SimpleToComplex);
-		CONNECT(SimpleToComplex, Multiply);
-		CONNECT(Multiply, QuadraturDemodulator);
+		CONNECT(AudioSource, DcBlocker);
+		CONNECT(DcBlocker, ShortToFloat);
+		CONNECT(ShortToFloat, SimpleToComplex);
+		CONNECT(SimpleToComplex, BandPassFilter);
+		CONNECT(BandPassFilter, Multiply);
+		CONNECT(Multiply, BandPassFilter);
+		CONNECT(BandPassFilter, QuadraturDemodulator);
 		CONNECT(QuadraturDemodulator, ClockRecovery);
 		CONNECT(ClockRecovery, BinarySlicer);
 		CONNECT(BinarySlicer, FileSink);

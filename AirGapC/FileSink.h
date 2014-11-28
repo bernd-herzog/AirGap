@@ -1,1 +1,3 @@
-void FileSink_OnData(short *data);
+#include "DataTypes.h"
+
+void FileSink_OnData(BoolPackage);

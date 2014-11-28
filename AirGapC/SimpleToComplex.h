@@ -1,4 +1,4 @@
 #include "DataTypes.h"
 
-void(*SimpleToComplex_ReportData)(short *);
-void SimpleToComplex_OnData(shortPackage);
+void(*SimpleToComplex_ReportData)(ComplexPackage);
+void SimpleToComplex_OnData(FloatPackage);

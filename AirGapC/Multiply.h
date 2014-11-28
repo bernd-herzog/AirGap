@@ -1,4 +1,4 @@
 #include "Complex.h"
 
-void(*Multiply_ReportData)(Complex *);
-void Multiply_OnData(Complex *data);
+void(*Multiply_ReportData)(ComplexPackage);
+void Multiply_OnData(ComplexPackage);

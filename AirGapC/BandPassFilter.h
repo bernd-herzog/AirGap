@@ -1,4 +1,4 @@
 #include "DataTypes.h"
 
-void(*BandPassFilter_ReportData)(short *);
-void BandPassFilter_OnData(shortPackage);
+void(*BandPassFilter_ReportData)(ComplexPackage);
+void BandPassFilter_OnData(ComplexPackage);
