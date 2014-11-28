@@ -77,8 +77,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AudioSink.c" />
-    <ClCompile Include="AudioSource.c" />
+    <ClCompile Include="AudioSink_Alsa.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="AudioSink_DirectSound.c" />
+    <ClCompile Include="AudioSource_Alsa.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="AudioSource_DirectSound.c" />
     <ClCompile Include="BandPassFilter.c" />
     <ClCompile Include="BinarySlicer.c" />
     <ClCompile Include="BitToSymbol.c" />

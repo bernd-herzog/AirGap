@@ -21,9 +21,6 @@
     <ClInclude Include="Complex.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="AudioSource.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="BandPassFilter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -63,21 +60,18 @@
     <ClInclude Include="AudioSink.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="AudioSource.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main_windows.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSource.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="BandPassFilter.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="SimpleToComplex.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSink.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="BinarySlicer.c">
@@ -111,6 +105,18 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="main_linux.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSource_DirectSound.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSink_DirectSound.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSink_Alsa.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSource_Alsa.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #include "AudioSource.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include <tchar.h>
+//#include <tchar.h>
 #include <dsound.h>
 
 #define BUFFER_SIZE (1024*128)
@@ -52,16 +52,13 @@ void InitInput()
 
 	result = capture->lpVtbl->CreateCaptureBuffer(capture, &bufferDescription, &g_captureBuffer, NULL);
 
-	Sleep(50);
+	void *pData1 = 0, *pData2 = 0;
 
-	void *pData1 = 0;
-	void *pData2;
-
-	DWORD len1, len2;
+	DWORD len1 = 0, len2 = 0;
 
 	LPDIRECTSOUNDNOTIFY8 notify;
 
-	IID *iid = &IID_IDirectSoundNotify;
+	const IID *iid = &IID_IDirectSoundNotify;
 
 	result = g_captureBuffer->lpVtbl->QueryInterface(g_captureBuffer, iid, (VOID**)&notify);
 
