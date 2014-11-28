@@ -109,7 +109,7 @@
     <ClInclude Include="BinarySlicer.h" />
     <ClInclude Include="BitToSymbol.h" />
     <ClInclude Include="ClockRecovery.h" />
-    <ClInclude Include="Complex.h" />
+    <ClInclude Include="DataTypes.h" />
     <ClInclude Include="ComplexToSimple.h" />
     <ClInclude Include="FileSink.h" />
     <ClInclude Include="FileSource.h" />

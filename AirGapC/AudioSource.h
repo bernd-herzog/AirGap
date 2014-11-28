@@ -1,2 +1,4 @@
-void(*AudioSource_ReportData)(short *);
+#include "DataTypes.h"
+
+void(*AudioSource_ReportData)(shortPackage);
 void AudioSource_Work();

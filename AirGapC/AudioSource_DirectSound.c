@@ -1,18 +1,19 @@
 #include "AudioSource.h"
+#include "DataTypes.h"
+
 #include <stdbool.h>
 #include <stdio.h>
-//#include <tchar.h>
 #include <dsound.h>
 
 #define BUFFER_SIZE (1024*128)
 #define numbuffers 8
 
-extern void(*AudioSource_ReportData)(short *);
+extern void(*AudioSource_ReportData)(shortPackage);
 extern void AudioSource_Work();
 
 void InitInput();
 void RunLoop();
-short * ReadData();
+shortPackage ReadData();
 bool WaitForData();
 
 HANDLE g_event;
@@ -88,11 +89,11 @@ void RunLoop()
 
 		if (hasData)
 		{
-			short * data = ReadData();
+			shortPackage data = ReadData();
 
 			AudioSource_ReportData(data);
 
-			free(data);
+			free(data.data);
 		}
 	}
 }
@@ -103,7 +104,7 @@ bool WaitForData()
 	return dwResult == WAIT_OBJECT_0;
 }
 
-short * ReadData()
+shortPackage ReadData()
 {
 	static int caputureOffset = 0;
 
@@ -137,5 +138,9 @@ short * ReadData()
 	caputureOffset += len1;
 	caputureOffset %= BUFFER_SIZE; // Circular buffer
 
-	return data;
+	shortPackage ret;
+	ret.count = len1;
+	ret.data = data;
+
+	return ret;
 }
