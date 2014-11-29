@@ -94,6 +94,7 @@
     <ClCompile Include="FileSink.c" />
     <ClCompile Include="FileSource.c" />
     <ClCompile Include="FirFilter.c" />
+    <ClCompile Include="FloatToShort.c" />
     <ClCompile Include="FrequencyModulator.c" />
     <ClCompile Include="main_linux.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -117,6 +118,7 @@
     <ClInclude Include="FileSink.h" />
     <ClInclude Include="FileSource.h" />
     <ClInclude Include="FirFilter.h" />
+    <ClInclude Include="FloatToShort.h" />
     <ClInclude Include="FrequencyModulator.h" />
     <ClInclude Include="interface.h" />
     <ClInclude Include="Multiply.h" />

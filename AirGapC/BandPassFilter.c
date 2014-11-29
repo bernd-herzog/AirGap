@@ -1,10 +1,11 @@
 #include "BandPassFilter.h"
+#include "DataTypes.h"
 
-extern void(*BandPassFilter_ReportData)(short *);
-extern void BandPassFilter_OnData(short *data);
+extern void(*BandPassFilter_ReportData)(ComplexPackage);
+extern void BandPassFilter_OnData(ComplexPackage);
 
-void BandPassFilter_OnData(short *data)
+void BandPassFilter_OnData(ComplexPackage packet)
 {
 	//do something with data
-	BandPassFilter_ReportData(data);
+	BandPassFilter_ReportData(packet);
 }

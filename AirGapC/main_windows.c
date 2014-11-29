@@ -28,6 +28,7 @@
 #include "AudioSink.h"
 #include "ShortToFloat.h"
 #include "DcBlocker.h"
+#include "FloatToShort.h"
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -62,7 +63,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		CONNECT(FirFilter, FrequencyModulator);
 		CONNECT(FrequencyModulator, Multiply);
 		CONNECT(Multiply, ComplexToSimple);
-		CONNECT(ComplexToSimple, AudioSink);
+		CONNECT(ComplexToSimple, FloatToShort);
+		CONNECT(FloatToShort, AudioSink);
 
 		FileSource_Work();
 	}

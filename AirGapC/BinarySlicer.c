@@ -1,10 +1,12 @@
 #include "BinarySlicer.h"
+#include "DataTypes.h"
 
-extern void(*BinarySlicer_ReportData)(short *data);
-extern void BinarySlicer_OnData(short *data);
+extern void(*BinarySlicer_ReportData)(BoolPackage);
+extern void BinarySlicer_OnData(FloatPackage);
 
-void BinarySlicer_OnData(short *data)
+void BinarySlicer_OnData(FloatPackage packet)
 {
+	BoolPackage ret;
 	//do something with data
-	BinarySlicer_ReportData(data);
+	BinarySlicer_ReportData(ret);
 }

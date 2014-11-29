@@ -1,11 +1,12 @@
 #include "FileSource.h"
+#include "DataTypes.h"
 
-extern void(*FileSource_ReportData)(short *data);
+extern void(*FileSource_ReportData)(BoolPackage);
 extern void FileSource_Work();
 
 void FileSource_Work()
 {
-	short data[512];
-
-	FileSource_ReportData(data);
+	BoolPackage ret;
+	
+	FileSource_ReportData(ret);
 }

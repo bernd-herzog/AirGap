@@ -1,10 +1,10 @@
 #include "FirFilter.h"
 
-extern void(*FirFilter_ReportData)(short *data);
-extern void FirFilter_OnData(short *data);
+extern void(*FirFilter_ReportData)(FloatPackage);
+extern void FirFilter_OnData(FloatPackage);
 
-void FirFilter_OnData(short *data)
+void FirFilter_OnData(FloatPackage packet)
 {
 	//do something with data
-	FirFilter_ReportData(data);
+	FirFilter_ReportData(packet);
 }

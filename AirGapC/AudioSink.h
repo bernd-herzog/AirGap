@@ -1,1 +1,3 @@
-void(AudioSink_OnData)(short *data);
+#include "DataTypes.h"
+
+void(AudioSink_OnData)(ShortPackage);

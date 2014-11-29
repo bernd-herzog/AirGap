@@ -1,2 +1,2 @@
-void(*FrequencyModulator_ReportData)(short *);
-void FrequencyModulator_OnData(short *data);
+void(*FrequencyModulator_ReportData)(ComplexPackage);
+void FrequencyModulator_OnData(FloatPackage);

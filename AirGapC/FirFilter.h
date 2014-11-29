@@ -1,2 +1,4 @@
-void(*FirFilter_ReportData)(short *);
-void FirFilter_OnData(short *data);
+#include "DataTypes.h"
+
+void(*FirFilter_ReportData)(FloatPackage);
+void FirFilter_OnData(FloatPackage);

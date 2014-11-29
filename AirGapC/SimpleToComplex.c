@@ -1,10 +1,12 @@
 #include "SimpleToComplex.h"
+#include "DataTypes.h"
 
-extern void(*SimpleToComplex_ReportData)(short *data);
-extern void SimpleToComplex_OnData(short *data);
+extern void(*SimpleToComplex_ReportData)(ComplexPackage);
+extern void SimpleToComplex_OnData(FloatPackage);
 
-void SimpleToComplex_OnData(short *data)
+void SimpleToComplex_OnData(FloatPackage packet)
 {
 	//do something with data
-	SimpleToComplex_ReportData(data);
+	ComplexPackage ret;
+	SimpleToComplex_ReportData(ret);
 }

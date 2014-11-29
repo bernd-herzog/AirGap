@@ -1,10 +1,11 @@
 #include "ClockRecovery.h"
+#include "DataTypes.h"
 
-extern void(*ClockRecovery_ReportData)(short *data);
-extern void ClockRecovery_OnData(float *data);
+extern void(*ClockRecovery_ReportData)(FloatPackage);
+extern void ClockRecovery_OnData(FloatPackage);
 
-void ClockRecovery_OnData(float *data)
+void ClockRecovery_OnData(FloatPackage packet)
 {
 	//do something with data
-	ClockRecovery_ReportData((short *)data);
+	ClockRecovery_ReportData(packet);
 }

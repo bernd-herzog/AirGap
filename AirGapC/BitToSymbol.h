@@ -1,2 +1,4 @@
-void(*BitToSymbol_ReportData)(short *);
-void BitToSymbol_OnData(short *data);
+#include "DataTypes.h"
+
+void(*BitToSymbol_ReportData)(FloatPackage);
+void BitToSymbol_OnData(BoolPackage);

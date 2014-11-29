@@ -1,32 +1,38 @@
 #include "QuadraturDemodulator.h"
+#include "DataTypes.h"
 
-extern void(*QuadraturDemodulator_ReportData)(float *data);
-extern void QuadraturDemodulator_OnData(Complex *data);
+extern void(*QuadraturDemodulator_ReportData)(FloatPackage);
+extern void QuadraturDemodulator_OnData(ComplexPackage);
 
 float fast_atan2f(float, float);
 float fabs(float);
 
-void QuadraturDemodulator_OnData(Complex *data)
+void QuadraturDemodulator_OnData(ComplexPackage packet)
 {
-	for (int i = 1; i < 0; i++){
+	FloatPackage ret;
+	ret.count = packet.count;
+	ret.data = (float *)malloc(packet.count * sizeof(float));
+
+	for (int i = 1; i < packet.count; i++){
 
 		Complex conjugate;
-		conjugate.i = data[i-1].i;
-		conjugate.q = -data[i-1].q;
+		conjugate.i = packet.data[i - 1].i;
+		conjugate.q = -packet.data[i - 1].q;
 
-		Complex in = data[0];
+		Complex in = packet.data[i];
 
-		Complex product; // data[0] * conjugate 
+		Complex product;
 		product.i = in.i * conjugate.i - (in.q * conjugate.q);
 		product.q = in.i * conjugate.q + (in.q * conjugate.i);
 		
 		float gain = 1.0f;
 
 		float ret = fast_atan2f(product.i, product.q);
-
-
-		QuadraturDemodulator_ReportData(&ret);
 	}
+
+	QuadraturDemodulator_ReportData(ret);
+
+	free(ret.data);
 }
 
 #define REAL float
