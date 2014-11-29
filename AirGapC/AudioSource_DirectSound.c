@@ -8,12 +8,12 @@
 #define BUFFER_SIZE (1024*128)
 #define numbuffers 8
 
-extern void(*AudioSource_ReportData)(ShortPackage);
+extern void(*AudioSource_ReportData)(ComplexPackage);
 extern void AudioSource_Work();
 
 void InitInput();
 void RunLoop();
-ShortPackage ReadData();
+ComplexPackage ReadData();
 bool WaitForData();
 
 HANDLE g_event;
@@ -27,7 +27,7 @@ void AudioSource_Work()
 
 void InitInput()
 {
-	LPDIRECTSOUNDCAPTURE8 capture;
+	LPDIRECTSOUNDCAPTURE capture;
 	HRESULT result = DirectSoundCaptureCreate(NULL, &capture, NULL);
 
 	WAVEFORMATEX waveformat;
@@ -89,7 +89,7 @@ void RunLoop()
 
 		if (hasData)
 		{
-			ShortPackage data = ReadData();
+			ComplexPackage data = ReadData();
 
 			AudioSource_ReportData(data);
 
@@ -104,7 +104,7 @@ bool WaitForData()
 	return dwResult == WAIT_OBJECT_0;
 }
 
-ShortPackage ReadData()
+ComplexPackage ReadData()
 {
 	static int caputureOffset = 0;
 
@@ -127,8 +127,19 @@ ShortPackage ReadData()
 
 	res = g_captureBuffer->lpVtbl->Lock(g_captureBuffer, caputureOffset, lockSize, &pData1, &len1, &pData2, &len2, 0L);
 
-	short *data = (short *)malloc(len1);
-	memcpy(data, pData1, len1);
+	int countSamples = len1;
+
+	ComplexPackage ret;
+	ret.count = countSamples;
+	ret.data = (Complex *)malloc(countSamples * sizeof(Complex));
+
+	short *bufferData = (short *)pData1;
+
+	for (int i = 0; i < countSamples; i++)
+	{
+		ret.data[i].i = bufferData[i];
+		ret.data[i].q = bufferData[i];
+	}
 
 	if (pData1)
 	{
@@ -136,11 +147,7 @@ ShortPackage ReadData()
 	}
 
 	caputureOffset += len1;
-	caputureOffset %= BUFFER_SIZE; // Circular buffer
-
-	ShortPackage ret;
-	ret.count = len1;
-	ret.data = data;
+	caputureOffset %= BUFFER_SIZE;
 
 	return ret;
 }

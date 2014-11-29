@@ -13,22 +13,20 @@
 #include <stdbool.h>
 
 #include "AudioSource.h"
-#include "BandPassFilter.h"
-#include "SimpleToComplex.h"
-#include "Multiply.h"
-#include "QuadraturDemodulator.h"
-#include "ClockRecovery.h"
-#include "BinarySlicer.h"
+#include "AudioSink.h"
+
 #include "FileSink.h"
 #include "FileSource.h"
+
+#include "BinarySlicer.h"
 #include "BitToSymbol.h"
-#include "FirFilter.h"
+
 #include "FrequencyModulator.h"
-#include "ComplexToSimple.h"
-#include "AudioSink.h"
-#include "ShortToFloat.h"
-#include "DcBlocker.h"
-#include "FloatToShort.h"
+#include "QuadraturDemodulator.h"
+
+#include "Multiply.h"
+#include "ClockRecovery.h"
+#include "FirFilter.h"
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -40,16 +38,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	UNREFERENCED_PARAMETER(nCmdShow);
 
-	bool isReceiver = true;
+	bool isReceiver = false;
 
 	if (isReceiver){
-		CONNECT(AudioSource, DcBlocker);
-		CONNECT(DcBlocker, ShortToFloat);
-		CONNECT(ShortToFloat, SimpleToComplex);
-		CONNECT(SimpleToComplex, BandPassFilter);
-		CONNECT(BandPassFilter, Multiply);
-		CONNECT(Multiply, BandPassFilter);
-		CONNECT(BandPassFilter, QuadraturDemodulator);
+		CONNECT(AudioSource, Multiply);
+		CONNECT(Multiply, FirFilter);
+		CONNECT(FirFilter, QuadraturDemodulator);
 		CONNECT(QuadraturDemodulator, ClockRecovery);
 		CONNECT(ClockRecovery, BinarySlicer);
 		CONNECT(BinarySlicer, FileSink);
@@ -62,13 +56,10 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		CONNECT(BitToSymbol, FirFilter);
 		CONNECT(FirFilter, FrequencyModulator);
 		CONNECT(FrequencyModulator, Multiply);
-		CONNECT(Multiply, ComplexToSimple);
-		CONNECT(ComplexToSimple, FloatToShort);
-		CONNECT(FloatToShort, AudioSink);
+		CONNECT(Multiply, AudioSink);
 
 		FileSource_Work();
 	}
-
 
 	return 0;
 }

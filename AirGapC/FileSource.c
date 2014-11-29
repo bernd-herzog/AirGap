@@ -7,6 +7,8 @@ extern void FileSource_Work();
 void FileSource_Work()
 {
 	BoolPackage ret;
+	ret.count = 0;
+	ret.data = 0;
 	
 	FileSource_ReportData(ret);
 }

@@ -6,6 +6,6 @@ extern void BandPassFilter_OnData(ComplexPackage);
 
 void BandPassFilter_OnData(ComplexPackage packet)
 {
-	//do something with data
+	//Nicht implementieren!
 	BandPassFilter_ReportData(packet);
 }

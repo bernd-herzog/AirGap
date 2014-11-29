@@ -89,12 +89,10 @@
     <ClCompile Include="BinarySlicer.c" />
     <ClCompile Include="BitToSymbol.c" />
     <ClCompile Include="ClockRecovery.c" />
-    <ClCompile Include="ComplexToSimple.c" />
     <ClCompile Include="DcBlocker.c" />
     <ClCompile Include="FileSink.c" />
     <ClCompile Include="FileSource.c" />
     <ClCompile Include="FirFilter.c" />
-    <ClCompile Include="FloatToShort.c" />
     <ClCompile Include="FrequencyModulator.c" />
     <ClCompile Include="main_linux.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -102,8 +100,6 @@
     <ClCompile Include="main_windows.c" />
     <ClCompile Include="Multiply.c" />
     <ClCompile Include="QuadraturDemodulator.c" />
-    <ClCompile Include="ShortToFloat.c" />
-    <ClCompile Include="SimpleToComplex.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioSink.h" />
@@ -113,17 +109,13 @@
     <ClInclude Include="BitToSymbol.h" />
     <ClInclude Include="ClockRecovery.h" />
     <ClInclude Include="DataTypes.h" />
-    <ClInclude Include="ComplexToSimple.h" />
     <ClInclude Include="DcBlocker.h" />
     <ClInclude Include="FileSink.h" />
     <ClInclude Include="FileSource.h" />
     <ClInclude Include="FirFilter.h" />
-    <ClInclude Include="FloatToShort.h" />
     <ClInclude Include="FrequencyModulator.h" />
     <ClInclude Include="Multiply.h" />
     <ClInclude Include="QuadraturDemodulator.h" />
-    <ClInclude Include="ShortToFloat.h" />
-    <ClInclude Include="SimpleToComplex.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

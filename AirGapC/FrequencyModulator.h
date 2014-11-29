@@ -1,2 +1,2 @@
 void(*FrequencyModulator_ReportData)(ComplexPackage);
-void FrequencyModulator_OnData(FloatPackage);
+void FrequencyModulator_OnData(ComplexPackage);
