@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="interface.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="BandPassFilter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

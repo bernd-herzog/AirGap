@@ -1,8 +1,8 @@
 #include "FileSink.h"
 
-extern void FileSink_OnData(short *data);
+extern void FileSink_OnData(BoolPackage);
 
-void FileSink_OnData(short *data)
+void FileSink_OnData(BoolPackage packet)
 {
 	//do something with data
 }

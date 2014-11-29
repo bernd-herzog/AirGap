@@ -1,7 +1,7 @@
 #include "FloatToShort.h"
 
-extern void(*FloatToShort_ReportData)(FloatPackage);
-extern void FloatToShort_OnData(ShortPackage);
+extern void(*FloatToShort_ReportData)(ShortPackage);
+extern void FloatToShort_OnData(FloatPackage);
 
 void FloatToShort_OnData(FloatPackage packet)
 {

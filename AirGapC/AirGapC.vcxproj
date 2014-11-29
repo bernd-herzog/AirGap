@@ -120,7 +120,6 @@
     <ClInclude Include="FirFilter.h" />
     <ClInclude Include="FloatToShort.h" />
     <ClInclude Include="FrequencyModulator.h" />
-    <ClInclude Include="interface.h" />
     <ClInclude Include="Multiply.h" />
     <ClInclude Include="QuadraturDemodulator.h" />
     <ClInclude Include="ShortToFloat.h" />

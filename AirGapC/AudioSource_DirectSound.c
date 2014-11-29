@@ -8,7 +8,7 @@
 #define BUFFER_SIZE (1024*128)
 #define numbuffers 8
 
-extern void(*AudioSource_ReportData)(shortPackage);
+extern void(*AudioSource_ReportData)(ShortPackage);
 extern void AudioSource_Work();
 
 void InitInput();

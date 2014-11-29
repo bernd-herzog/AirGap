@@ -1,5 +1,6 @@
 #include "QuadraturDemodulator.h"
 #include "DataTypes.h"
+#include <stdlib.h>
 
 extern void(*QuadraturDemodulator_ReportData)(FloatPackage);
 extern void QuadraturDemodulator_OnData(ComplexPackage);
@@ -13,7 +14,7 @@ void QuadraturDemodulator_OnData(ComplexPackage packet)
 	ret.count = packet.count;
 	ret.data = (float *)malloc(packet.count * sizeof(float));
 
-	for (int i = 1; i < packet.count; i++){
+	for (unsigned int i = 1; i < packet.count; i++){
 
 		Complex conjugate;
 		conjugate.i = packet.data[i - 1].i;
