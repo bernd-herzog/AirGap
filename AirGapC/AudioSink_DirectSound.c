@@ -37,9 +37,9 @@ void AudioSink_OnData(ComplexPackage data)
 		//write rest of buffer
 		int rest = (BUFFER_SIZE / numbuffers) - positionInBuffer;
 
-		if (data.count < rest)
+		if (data.count*2 < rest)
 		{
-			rest = data.count;
+			rest = data.count * 2;
 			WriteToBuffer(data.data, rest);
 			return;
 		}
@@ -50,7 +50,7 @@ void AudioSink_OnData(ComplexPackage data)
 		}
 	}
 
-	while (data.count - written > (BUFFER_SIZE / numbuffers))
+	while (data.count * 2 - written > (BUFFER_SIZE / numbuffers))
 	{
 		WaitForFreeBuffer();
 		WriteToBuffer(data.data + written, (BUFFER_SIZE / numbuffers));
@@ -58,10 +58,10 @@ void AudioSink_OnData(ComplexPackage data)
 		written += (BUFFER_SIZE / numbuffers);
 	}
 
-	if (data.count > written)
+	if (data.count * 2 > written)
 	{
 		WaitForFreeBuffer();
-		WriteToBuffer(data.data + written, data.count - written);
+		WriteToBuffer(data.data + written, data.count * 2 - written);
 	}
 }
 
@@ -162,7 +162,7 @@ void WriteToBuffer(Complex *source, int num)
 
 	for (int i = 0; i < num / 2; i++)
 	{
-		samples[i] = (short) ((float)source[i].i * 0x10000f);
+		samples[i] = (short)(source[i].i * (float)0x8000);
 	}
 
 	result = soundBuffer->lpVtbl->Unlock(soundBuffer, buffer, bufferLen, buffer2, bufferLen2);
