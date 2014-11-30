@@ -22,12 +22,9 @@ DWORD ourPosition = 0;
 void AudioSink_OnData(ComplexPackage data)
 {
 	if (soundBuffer == 0)
+	{
 		Init();
-
-	//do something with data
-
-
-	HRESULT result;
+	}
 
 	DWORD positionInBuffer = ourPosition % (BUFFER_SIZE / numbuffers);
 
@@ -38,7 +35,7 @@ void AudioSink_OnData(ComplexPackage data)
 		WaitForFreeBuffer();
 
 		//write rest of buffer
-		DWORD rest = (BUFFER_SIZE / numbuffers) - positionInBuffer;
+		int rest = (BUFFER_SIZE / numbuffers) - positionInBuffer;
 
 		if (data.count < rest)
 		{
@@ -113,7 +110,6 @@ void Init()
 		positionNotify[i].hEventNotify = event;
 	}
 
-
 	LPVOID buffer = 0;
 	DWORD bufferLen = 0;
 	LPVOID buffer2 = 0;
@@ -123,20 +119,10 @@ void Init()
 
 	short *samples = (short *)buffer;
 
-	for (int i = 0; i < BUFFER_SIZE / 2; i++)
-	{
-		float x = (float)i;
-		x *= 2 * 3.1415f;
-		x /= 22;
-		float y = sinf(x);
-
-		samples[i] = y;
-	}
+	ZeroMemory(samples, BUFFER_SIZE);
 
 	result = soundBuffer->lpVtbl->Unlock(soundBuffer, buffer, bufferLen, buffer2, bufferLen2);
-
 	result = notify->lpVtbl->SetNotificationPositions(notify, numbuffers, positionNotify);
-
 	result = soundBuffer->lpVtbl->Play(soundBuffer, 0, 0, DSBPLAY_LOOPING);
 }
 
@@ -165,7 +151,7 @@ void WaitForFreeBuffer()
 
 void WriteToBuffer(Complex *source, int num)
 {
-	void *buffer = 0;
+	LPVOID buffer = 0;
 	DWORD bufferLen = 0;
 	LPVOID buffer2 = 0;
 	DWORD bufferLen2 = 0;
@@ -176,7 +162,7 @@ void WriteToBuffer(Complex *source, int num)
 
 	for (int i = 0; i < num / 2; i++)
 	{
-		samples[i] = (short) (source[i].i * 0x10000);
+		samples[i] = (short) ((float)source[i].i * 0x10000f);
 	}
 
 	result = soundBuffer->lpVtbl->Unlock(soundBuffer, buffer, bufferLen, buffer2, bufferLen2);

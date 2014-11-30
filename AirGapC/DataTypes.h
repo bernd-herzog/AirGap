@@ -9,21 +9,21 @@ typedef struct {
 
 typedef struct {
 	short *data;
-	unsigned int count;
+	int count;
 } ShortPackage;
 
 typedef struct {
 	float *data;
-	unsigned int count;
+	int count;
 } FloatPackage;
 
 typedef struct {
 	Complex *data;
-	unsigned int count;
+	int count;
 } ComplexPackage;
 
 typedef struct {
 	bool *data;
-	unsigned int count;
+	int count;
 } BoolPackage;
 

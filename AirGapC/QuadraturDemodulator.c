@@ -14,7 +14,7 @@ void QuadraturDemodulator_OnData(ComplexPackage packet)
 	ret.count = packet.count;
 	ret.data = (float *)malloc(packet.count * sizeof(float));
 
-	for (unsigned int i = 1; i < packet.count; i++){
+	for (int i = 1; i < packet.count; i++){
 
 		Complex conjugate;
 		conjugate.i = packet.data[i - 1].i;
