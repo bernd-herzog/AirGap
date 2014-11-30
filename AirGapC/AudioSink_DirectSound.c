@@ -12,8 +12,12 @@
 extern void AudioSink_OnData(ComplexPackage);
 
 void Init();
-LPDIRECTSOUNDBUFFER soundBuffer = 0;
+void WaitForFreeBuffer();
+void WriteToBuffer(Complex *source, int num);
 
+LPDIRECTSOUNDBUFFER soundBuffer = 0;
+HANDLE event;
+DWORD ourPosition = 0;
 
 void AudioSink_OnData(ComplexPackage data)
 {
@@ -22,35 +26,46 @@ void AudioSink_OnData(ComplexPackage data)
 
 	//do something with data
 
-	void *buffer = 0;
-	DWORD bufferLen = 0;
-	LPVOID buffer2 = 0;
-	DWORD bufferLen2 = 0;
 
-	DWORD p1, p2;
+	HRESULT result;
 
-	HRESULT result = soundBuffer->lpVtbl->GetCurrentPosition(soundBuffer, &p1, &p2);
+	DWORD positionInBuffer = ourPosition % (BUFFER_SIZE / numbuffers);
 
-	//TODO: wait if buffer is full
+	int written = 0;
 
-	result = soundBuffer->lpVtbl->Lock(soundBuffer, 0, BUFFER_SIZE, &buffer, &bufferLen, &buffer2, &bufferLen2, 0);
-
-	short *samples = (short *)buffer;
-
-	for (int i = 0; i < BUFFER_SIZE / 2; i++)
+	if (positionInBuffer != 0)
 	{
-		float x = (float)i;
-		x *= 2 * 3.1415f;
-		x /= 22;
-		float y = sinf(x);
+		WaitForFreeBuffer();
 
-		samples[i] = 0;
+		//write rest of buffer
+		DWORD rest = (BUFFER_SIZE / numbuffers) - positionInBuffer;
+
+		if (data.count < rest)
+		{
+			rest = data.count;
+			WriteToBuffer(data.data, rest);
+			return;
+		}
+		else
+		{
+			WriteToBuffer(data.data, rest);
+			written = rest;
+		}
 	}
 
-	result = soundBuffer->lpVtbl->Unlock(soundBuffer, buffer, bufferLen, buffer2, bufferLen2);
+	while (data.count - written > (BUFFER_SIZE / numbuffers))
+	{
+		WaitForFreeBuffer();
+		WriteToBuffer(data.data + written, (BUFFER_SIZE / numbuffers));
 
+		written += (BUFFER_SIZE / numbuffers);
+	}
 
-
+	if (data.count > written)
+	{
+		WaitForFreeBuffer();
+		WriteToBuffer(data.data + written, data.count - written);
+	}
 }
 
 void Init()
@@ -87,7 +102,7 @@ void Init()
 
 	result = soundBuffer->lpVtbl->QueryInterface(soundBuffer, iid, (VOID**)&notify);
 
-	HANDLE event = CreateEvent(NULL, FALSE, FALSE, NULL);
+	event = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 
 	DSBPOSITIONNOTIFY positionNotify[numbuffers];
@@ -115,7 +130,7 @@ void Init()
 		x /= 22;
 		float y = sinf(x);
 
-		samples[i] = 0;
+		samples[i] = y;
 	}
 
 	result = soundBuffer->lpVtbl->Unlock(soundBuffer, buffer, bufferLen, buffer2, bufferLen2);
@@ -123,4 +138,49 @@ void Init()
 	result = notify->lpVtbl->SetNotificationPositions(notify, numbuffers, positionNotify);
 
 	result = soundBuffer->lpVtbl->Play(soundBuffer, 0, 0, DSBPLAY_LOOPING);
+}
+
+void WaitForFreeBuffer()
+{
+	while (true)
+	{
+		DWORD playPosition, writePosition;
+		
+		//do we have to wait?
+		HRESULT result = soundBuffer->lpVtbl->GetCurrentPosition(soundBuffer, &playPosition, &writePosition);
+
+		DWORD part = writePosition % (BUFFER_SIZE / numbuffers);
+		DWORD buffer = writePosition / (BUFFER_SIZE / numbuffers);
+
+		DWORD ourBuffer = ourPosition / BUFFER_SIZE;
+
+		if (ourBuffer == buffer)
+		{
+			DWORD dwResult = MsgWaitForMultipleObjects(1, &event, FALSE, INFINITE, QS_ALLEVENTS);
+		}
+		else
+			break;
+	}
+}
+
+void WriteToBuffer(Complex *source, int num)
+{
+	void *buffer = 0;
+	DWORD bufferLen = 0;
+	LPVOID buffer2 = 0;
+	DWORD bufferLen2 = 0;
+
+	HRESULT result = soundBuffer->lpVtbl->Lock(soundBuffer, ourPosition, num * 2, &buffer, &bufferLen, &buffer2, &bufferLen2, 0);
+
+	short *samples = (short *)buffer;
+
+	for (int i = 0; i < num / 2; i++)
+	{
+		samples[i] = (short) (source[i].i * 0x10000);
+	}
+
+	result = soundBuffer->lpVtbl->Unlock(soundBuffer, buffer, bufferLen, buffer2, bufferLen2);
+
+	ourPosition += num * 2;
+	ourPosition = ourPosition % BUFFER_SIZE;
 }
