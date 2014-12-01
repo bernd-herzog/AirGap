@@ -54,9 +54,6 @@
     <ClInclude Include="DataTypes.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DcBlocker.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main_windows.c">
@@ -105,9 +102,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="AudioSource_Alsa.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="DcBlocker.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

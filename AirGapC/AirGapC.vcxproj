@@ -89,7 +89,6 @@
     <ClCompile Include="BinarySlicer.c" />
     <ClCompile Include="BitToSymbol.c" />
     <ClCompile Include="ClockRecovery.c" />
-    <ClCompile Include="DcBlocker.c" />
     <ClCompile Include="FileSink.c" />
     <ClCompile Include="FileSource.c" />
     <ClCompile Include="FirFilter.c" />
@@ -109,7 +108,6 @@
     <ClInclude Include="BitToSymbol.h" />
     <ClInclude Include="ClockRecovery.h" />
     <ClInclude Include="DataTypes.h" />
-    <ClInclude Include="DcBlocker.h" />
     <ClInclude Include="FileSink.h" />
     <ClInclude Include="FileSource.h" />
     <ClInclude Include="FirFilter.h" />

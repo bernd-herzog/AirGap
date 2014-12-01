@@ -39,8 +39,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(lpCmdLine);
 	UNREFERENCED_PARAMETER(nCmdShow);
 
-
-
 	bool isReceiver = false;
 
 	if (isReceiver){
