@@ -10,7 +10,7 @@ void Multiply_OnData(ComplexPackage data)
 	//do something with data
 	static long l = 0;
 
-	const plen = 195382;
+	const int plen = 195382;
 
 	while (true){
 		ComplexPackage ret;

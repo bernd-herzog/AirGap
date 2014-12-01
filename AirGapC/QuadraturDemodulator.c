@@ -6,7 +6,7 @@ extern void(*QuadraturDemodulator_ReportData)(FloatPackage);
 extern void QuadraturDemodulator_OnData(ComplexPackage);
 
 float fast_atan2f(float, float);
-float fabs(float);
+float fabs2(float);
 
 void QuadraturDemodulator_OnData(ComplexPackage packet)
 {
@@ -110,7 +110,7 @@ REAL fast_atan_table[257] = {
 	7.853983e-01f
 };
 
-float fabs(float val)
+float fabs2(float val)
 {
 	if (val < val)
 		return -val;
@@ -128,8 +128,8 @@ float fast_atan2f(float x, float y)
 		return 0.0;
 
 	/* normalize to +/- 45 degree range */
-	y_abs = fabs(y);
-	x_abs = fabs(x);
+	y_abs = fabs2(y);
+	x_abs = fabs2(x);
 	//z = (y_abs < x_abs ? y_abs / x_abs : x_abs / y_abs);
 	if (y_abs < x_abs)
 		z = y_abs / x_abs;

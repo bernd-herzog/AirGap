@@ -7,7 +7,6 @@
 
 #include "AudioSource.h"
 #include "BandPassFilter.h"
-#include "SimpleToComplex.h"
 #include "Multiply.h"
 #include "QuadraturDemodulator.h"
 #include "ClockRecovery.h"
@@ -17,7 +16,6 @@
 #include "BitToSymbol.h"
 #include "FirFilter.h"
 #include "FrequencyModulator.h"
-#include "ComplexToSimple.h"
 #include "AudioSink.h"
 
 int main(int argc, char **argv)
