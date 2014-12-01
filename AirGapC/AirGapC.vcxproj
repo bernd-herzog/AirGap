@@ -93,6 +93,7 @@
     <ClCompile Include="FileSource.c" />
     <ClCompile Include="FirFilter.c" />
     <ClCompile Include="FrequencyModulator.c" />
+    <ClCompile Include="main.c" />
     <ClCompile Include="main_linux.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -112,8 +113,12 @@
     <ClInclude Include="FileSource.h" />
     <ClInclude Include="FirFilter.h" />
     <ClInclude Include="FrequencyModulator.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="Multiply.h" />
     <ClInclude Include="QuadraturDemodulator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -54,6 +54,9 @@
     <ClInclude Include="DataTypes.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main_windows.c">
@@ -104,5 +107,11 @@
     <ClCompile Include="AudioSource_Alsa.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
   </ItemGroup>
 </Project>
