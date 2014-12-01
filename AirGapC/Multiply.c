@@ -5,29 +5,22 @@
 extern void(*Multiply_ReportData)(ComplexPackage);
 extern void Multiply_OnData(ComplexPackage);
 
+const int sampleRate;
+
 void Multiply_OnData(ComplexPackage data)
 {
-	//do something with data
-	static long l = 0;
+	float frequency = 20000.0f;
+	int position = 0;
 
-	const int plen = 195382;
+	//TODO: datenstrom mit einer sinus/cosinus welle muliplizieren
 
-	while (true){
-		ComplexPackage ret;
-
-		ret.count = plen;
-		ret.data = (Complex *)malloc(plen * sizeof(Complex));
-
-		for (int i = 0; i < plen; i++)
-		{
-			float x = (float)l++ * 2.f * 3.1415f;
-			float y = sinf(x/44.05f);
-
-			ret.data[i].i = y*0.1f;
-			ret.data[i].q = 0.0f;
-		}
-
-		Multiply_ReportData(ret);
-		free(ret.data);
+	for (int i = 0; i < data.count; i++)
+	{
+		//TODO: sin & cos bei <position> mit <frequency> ausrechnen
+		position++;
+		//TODO: berechnete Zahl mit Zahl aus <data[i]> multiplizieren
 	}
+	//TODO: alle berechneten Zahlen zurückgeben
+
+	return;
 }
