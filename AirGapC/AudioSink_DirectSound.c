@@ -13,13 +13,13 @@ extern void AudioSink_OnData(ComplexPackage);
 
 void Init();
 void WaitForFreeBuffer();
-void WriteToBuffer(Complex *source, int num);
+void WriteToBuffer(Complex *, int);
 
 LPDIRECTSOUNDBUFFER soundBuffer = 0;
 HANDLE event;
 DWORD ourPosition = 0;
 
-void AudioSink_OnData(ComplexPackage data)
+void AudioSink_OnData(ComplexPackage complexPackage)
 {
 	if (soundBuffer == 0)
 	{
@@ -28,40 +28,39 @@ void AudioSink_OnData(ComplexPackage data)
 
 	DWORD positionInBuffer = ourPosition % (BUFFER_SIZE / numbuffers);
 
-	int written = 0;
+	int bytesWritten = 0;
 
 	if (positionInBuffer != 0)
 	{
 		WaitForFreeBuffer();
 
 		//write rest of buffer
-		int rest = (BUFFER_SIZE / numbuffers) - positionInBuffer;
+		int bytesInBufferLeft = (BUFFER_SIZE / numbuffers) - positionInBuffer;
 
-		if (data.count*2 < rest)
+		if (complexPackage.count * 2 < bytesInBufferLeft)
 		{
-			rest = data.count * 2;
-			WriteToBuffer(data.data, rest);
+			WriteToBuffer(complexPackage.data, complexPackage.count);
 			return;
 		}
 		else
 		{
-			WriteToBuffer(data.data, rest);
-			written = rest;
+			WriteToBuffer(complexPackage.data, bytesInBufferLeft /2);
+			bytesWritten = bytesInBufferLeft;
 		}
 	}
 
-	while (data.count * 2 - written > (BUFFER_SIZE / numbuffers))
+	while (complexPackage.count * 2 - bytesWritten > (BUFFER_SIZE / numbuffers))
 	{
 		WaitForFreeBuffer();
-		WriteToBuffer(data.data + written, (BUFFER_SIZE / numbuffers));
+		WriteToBuffer(complexPackage.data + (bytesWritten / 2), (BUFFER_SIZE / numbuffers) /2);
 
-		written += (BUFFER_SIZE / numbuffers);
+		bytesWritten += (BUFFER_SIZE / numbuffers);
 	}
 
-	if (data.count * 2 > written)
+	if (complexPackage.count * 2 > bytesWritten)
 	{
 		WaitForFreeBuffer();
-		WriteToBuffer(data.data + written, data.count * 2 - written);
+		WriteToBuffer(complexPackage.data + (bytesWritten / 2), complexPackage.count - bytesWritten / 2);
 	}
 }
 
@@ -145,7 +144,9 @@ void WaitForFreeBuffer()
 			DWORD dwResult = MsgWaitForMultipleObjects(1, &event, FALSE, INFINITE, QS_ALLEVENTS);
 		}
 		else
+		{
 			break;
+		}
 	}
 }
 
@@ -156,11 +157,14 @@ void WriteToBuffer(Complex *source, int num)
 	LPVOID buffer2 = 0;
 	DWORD bufferLen2 = 0;
 
-	HRESULT result = soundBuffer->lpVtbl->Lock(soundBuffer, ourPosition, num * 2, &buffer, &bufferLen, &buffer2, &bufferLen2, 0);
+	HRESULT result = soundBuffer->lpVtbl->Lock(soundBuffer, ourPosition, num*2, &buffer, &bufferLen, &buffer2, &bufferLen2, 0);
+
+	if (bufferLen2 != 0)
+		return;
 
 	short *samples = (short *)buffer;
 
-	for (int i = 0; i < num / 2; i++)
+	for (int i = 0; i < num; i++)
 	{
 		samples[i] = (short)(source[i].i * (float)0x8000);
 	}

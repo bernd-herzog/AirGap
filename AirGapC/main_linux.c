@@ -22,13 +22,12 @@
 
 int main(int argc, char **argv)
 {
-	bool isReceiver = true;
+	bool isReceiver = false;
 
 	if (isReceiver){
-		CONNECT(AudioSource, BandPassFilter);
-		CONNECT(BandPassFilter, SimpleToComplex);
-		CONNECT(SimpleToComplex, Multiply);
-		CONNECT(Multiply, QuadraturDemodulator);
+		CONNECT(AudioSource, Multiply);
+		CONNECT(Multiply, FirFilter);
+		CONNECT(FirFilter, QuadraturDemodulator);
 		CONNECT(QuadraturDemodulator, ClockRecovery);
 		CONNECT(ClockRecovery, BinarySlicer);
 		CONNECT(BinarySlicer, FileSink);
@@ -41,8 +40,7 @@ int main(int argc, char **argv)
 		CONNECT(BitToSymbol, FirFilter);
 		CONNECT(FirFilter, FrequencyModulator);
 		CONNECT(FrequencyModulator, Multiply);
-		CONNECT(Multiply, ComplexToSimple);
-		CONNECT(ComplexToSimple, AudioSink);
+		CONNECT(Multiply, AudioSink);
 
 		FileSource_Work();
 	}
