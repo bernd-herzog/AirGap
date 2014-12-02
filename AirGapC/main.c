@@ -23,6 +23,8 @@ void AirGap_main()
 	bool isReceiver = false;
 
 	if (isReceiver){
+		FirFilter_InitLowPass();
+
 		CONNECT(AudioSource, Multiply);
 		CONNECT(Multiply, FirFilter);
 		CONNECT(FirFilter, QuadraturDemodulator);
@@ -34,6 +36,8 @@ void AirGap_main()
 	}
 	else
 	{
+		FirFilter_InitGaussian();
+
 		CONNECT(FileSource, BitToSymbol);
 		CONNECT(BitToSymbol, FirFilter);
 		CONNECT(FirFilter, FrequencyModulator);

@@ -57,6 +57,9 @@
     <ClInclude Include="main.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="agmath.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main_windows.c">
@@ -108,6 +111,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="agmath.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

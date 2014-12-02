@@ -1,6 +1,5 @@
 #include "Multiply.h"
 #include <stdlib.h>
-#include <math.h>
 
 extern void(*Multiply_ReportData)(ComplexPackage);
 extern void Multiply_OnData(ComplexPackage);

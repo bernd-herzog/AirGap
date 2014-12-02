@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <dsound.h>
-#include <math.h>
 
 #define BUFFER_SIZE (1024*128)
 #define numbuffers 8

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 typedef struct {
+//TODO: rename
 	float i;
 	float q;
 } Complex;

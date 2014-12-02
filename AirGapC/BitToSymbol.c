@@ -11,7 +11,17 @@ void BitToSymbol_OnData(BoolPackage packet)
 	ret.count = packet.count;
 	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
 
-	//TODO: jedes bit in -1.0 oder 1.0 umwandeln
+	for (int i = 0; i < ret.count; i++)
+	{
+		bool value = packet.data[i];
+		if (value == true){
+			ret.data[i].i = 1.f;
+		}
+		else{
+			ret.data[i].i = -1.f;
+		}
+		
+	}
 
 	BitToSymbol_ReportData(ret);
 	free(ret.data);
