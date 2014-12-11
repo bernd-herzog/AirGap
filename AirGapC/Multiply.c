@@ -18,10 +18,6 @@ void Multiply_OnData(ComplexPackage data)
 	ret.count = data.count;
 	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
 
-	ComplexPackage test;
-	test.count = data.count;
-	test.data = (Complex *)malloc(test.count * sizeof(Complex));
-
 	for (int i = 0; i < data.count; i++)
 	{
 		position++;
