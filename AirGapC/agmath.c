@@ -27,3 +27,8 @@ float ag_exp(float value)
 {
 	return expf(value);
 }
+
+float ag_log(float value)
+{
+	return logf(value);
+}

@@ -12,8 +12,10 @@
 #include "FrequencyModulator.h"
 #include "QuadraturDemodulator.h"
 
-#include "Multiply.h"
 #include "ClockRecovery.h"
+#include "Repeater.h"
+
+#include "Multiply.h"
 #include "FirFilter.h"
 
 #include <stdbool.h>
@@ -24,6 +26,7 @@ void AirGap_main()
 
 	if (isReceiver){
 		FirFilter_InitLowPass();
+		Multiply_SetFrequency(-20000.0f);
 
 		CONNECT(AudioSource, Multiply);
 		CONNECT(Multiply, FirFilter);
@@ -37,9 +40,11 @@ void AirGap_main()
 	else
 	{
 		FirFilter_InitGaussian();
+		Multiply_SetFrequency(20000.0f);
 
 		CONNECT(FileSource, BitToSymbol);
-		CONNECT(BitToSymbol, FirFilter);
+		CONNECT(BitToSymbol, Repeater);
+		CONNECT(Repeater, FirFilter);
 		CONNECT(FirFilter, FrequencyModulator);
 		CONNECT(FrequencyModulator, Multiply);
 		CONNECT(Multiply, AudioSink);

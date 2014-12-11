@@ -101,6 +101,7 @@
     <ClCompile Include="main_windows.c" />
     <ClCompile Include="Multiply.c" />
     <ClCompile Include="QuadraturDemodulator.c" />
+    <ClCompile Include="Repeater.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="agmath.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="Multiply.h" />
     <ClInclude Include="QuadraturDemodulator.h" />
+    <ClInclude Include="Repeater.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
