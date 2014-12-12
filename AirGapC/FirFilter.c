@@ -23,11 +23,9 @@ void FirFilter_OnData(ComplexPackage packet)
 
 void FirFilter_InitGaussian()
 {
-
-	//TODO: was machen diese parameter und welche werte brauchensie?
-	float spb = 1.0f;
-	float bt = 1.0f;
-	int ntaps = 0;
+	float spb = ag_SAMPLES_PER_SYMBOL;
+	float bt = 2000.0f * ag_SAMPLES_PER_SYMBOL; // Gaussian filter bandwidth * symbol time.
+	int ntaps = 4 * ag_SAMPLERATE;
 
 	float *taps = (float *) malloc (ntaps * sizeof(float));
 	float gain = 1.0f;
@@ -38,7 +36,7 @@ void FirFilter_InitGaussian()
 	float t0 = -0.5f * ntaps;
 	float ts;
 
-	for (int i = 0; i<ntaps; i++) {
+	for (int i = 0; i < ntaps; i++) {
 		t0++;
 		ts = s*dt*t0;
 		taps[i] = ag_exp(-0.5f *ts*ts);
@@ -46,6 +44,8 @@ void FirFilter_InitGaussian()
 	}
 	for (int i = 0; i<ntaps; i++)
 		taps[i] = taps[i] / scale * gain;
+
+	//todo: convolve with rectangular window size: ag_SAMPLES_PER_SYMBOL
 
 }
 

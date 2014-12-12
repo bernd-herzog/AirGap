@@ -10,3 +10,4 @@ float ag_log(float);
 
 #define ag_PI (3.14159265358979323846f)
 #define ag_SAMPLERATE 44100
+#define ag_SAMPLES_PER_SYMBOL 100;

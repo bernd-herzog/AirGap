@@ -1,10 +1,11 @@
 #include "Repeater.h"
+#include "agmath.h"
 #include <stdlib.h>
 
 extern void(*Repeater_ReportData)(ComplexPackage);
 extern void Repeater_OnData(ComplexPackage);
 
-int numRepeated = 100;
+int numRepeated = ag_SAMPLES_PER_SYMBOL;
 
 void Repeater_OnData(ComplexPackage data)
 {
