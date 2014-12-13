@@ -7,99 +7,157 @@ extern void FirFilter_OnData(ComplexPackage);
 
 extern void FirFilter_InitGaussian();
 extern void FirFilter_InitLowPass();
+void Faltung(Complex*, const Complex*, const Complex*, unsigned int);
 
-
-float *taps;
-int numTaps;
+float *_taps;
+int _numTaps;
+Complex *_buffer;
+int _bufferPosition = 0;
 
 void FirFilter_OnData(ComplexPackage packet)
 {
+	ComplexPackage ret;
+	ret.count = packet.count;
+	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
 
+	//Was wir tun ist stink normales falten
 
+	// doppelter buffer
+	for (int i = 0; i < packet.count; i++)
+	{
+		if (_bufferPosition != 0)
+			_buffer[_bufferPosition - 1] = packet.data[i];
+		_buffer[_bufferPosition - 1 + _numTaps] = packet.data[i];
+		
+		Faltung(&ret.data[i], _buffer + _bufferPosition, _taps, _numTaps);
+		
+		_bufferPosition = (_bufferPosition + 1) % _numTaps;
+		if (_bufferPosition >= _numTaps)
+			_bufferPosition -= _numTaps;
+	}
 
-	
-	FirFilter_ReportData(packet);
+	FirFilter_ReportData(ret);
 }
 
 void FirFilter_InitGaussian()
 {
 	float spb = ag_SAMPLES_PER_SYMBOL;
 	float bt = 2000.0f * ag_SAMPLES_PER_SYMBOL; // Gaussian filter bandwidth * symbol time.
-	int ntaps = 4 * ag_SAMPLERATE;
+	int ntapsGaussian = 4 * ag_SAMPLERATE;
 
-	float *taps = (float *) malloc (ntaps * sizeof(float));
+	float *tapsGaussian = (float *)malloc(ntapsGaussian * sizeof(float));
 	float gain = 1.0f;
 	
 	float scale = 0.0f;
 	float dt = 1.0f / spb;
 	float s = 1.0f / (ag_sqrt(ag_log(2.0f)) / (2 * ag_PI*bt));
-	float t0 = -0.5f * ntaps;
+	float t0 = -0.5f * ntapsGaussian;
 	float ts;
 
-	for (int i = 0; i < ntaps; i++) {
+	for (int i = 0; i < ntapsGaussian; i++) {
 		t0++;
 		ts = s*dt*t0;
-		taps[i] = ag_exp(-0.5f *ts*ts);
-		scale += taps[i];
+		tapsGaussian[i] = ag_exp(-0.5f *ts*ts);
+		scale += tapsGaussian[i];
 	}
-	for (int i = 0; i<ntaps; i++)
-		taps[i] = taps[i] / scale * gain;
 
-	//todo: convolve with rectangular window size: ag_SAMPLES_PER_SYMBOL
+	for (int i = 0; i < ntapsGaussian; i++)
+		tapsGaussian[i] = tapsGaussian[i] / scale * gain;
 
+	//convolve with rectangular window size: ag_SAMPLES_PER_SYMBOL
+	int ntaps = ntapsGaussian + ag_SAMPLES_PER_SYMBOL - 1;
+	float *taps = (float *)malloc(ntaps * sizeof(float));
+
+	for (int n = 0; n < ntaps; n++)
+	{
+		size_t kmin, kmax, k;
+
+		taps[n] = 0;
+
+		kmin = (n >= ntapsGaussian - 1) ? n - (ntapsGaussian - 1) : 0;
+		{
+			kmax = (n < spb - 1)
+				? n 
+				: ag_SAMPLES_PER_SYMBOL - 1;
+		}
+
+		for (k = kmin; k <= kmax; k++)
+		{
+			taps[n] += 1.0f * tapsGaussian[n - k];
+		}
+	}
+
+	//have actual taps now!!!
+	_taps = taps;
+	_numTaps = ntaps;
+	_buffer = (Complex *)malloc(sizeof(Complex) * (_numTaps * 2 - 1));
+	//TODO: ZERO _buffer
 }
 
 void FirFilter_InitLowPass()
 {
-	float transition_width = 100.0f;
-	float cutoff_freq = 1000.0f;
+	// variables
+	float maxAttenuation = 53; //for hamming
+	float transitionWidth = 100.0f;
+	float cutoffFrequency = 1000.0f;
+	float gain = 1.0f;
 
-	//TODO: welcher wert ist hier sinnvoll?
-	float attenuation_dB = 1.0f;
+	// calculate num taps for hamming WINDOW
+	int ntapsHammingWindow = (int)(maxAttenuation*ag_SAMPLERATE / (22.0*transitionWidth));
+	if ((ntapsHammingWindow & 1) == 0)
+		ntapsHammingWindow++;
 
-	//hamming window
-	int ntaps = (int)(attenuation_dB*ag_SAMPLERATE / (22.0*transition_width));;
-	if ((ntaps & 1) == 0)        // if even...
-		ntaps++;                // ...make odd
+	// calculate hamming window
+	float *tapsHammingWindow = (float *)malloc(ntapsHammingWindow * sizeof(float));
+	float M2 = ntapsHammingWindow - 1;
+	for (int n = 0; n < ntapsHammingWindow; n++)
+		tapsHammingWindow[n] = 0.54 - 0.46 * cos((2 * ag_PI * n) / M2);
 
-	float *hammingTaps = (float *)malloc(ntaps * sizeof(float));
-
-	float u = (float)(ntaps - 1);
-
-	for (int n = 0; n < ntaps; n++)
-		hammingTaps[n] = 0.54f - 0.46f * ag_cos((2 * ag_PI * n) / u);
-
-	// actual taps
-	float *taps = (float *) malloc (ntaps * sizeof(float));
-	float *w = hammingTaps;
+	//calculate LowPass Window
+	int ntaps = ntapsHammingWindow;
+	float *taps = (float *)malloc(ntaps * sizeof(float));
 
 	int M = (ntaps - 1) / 2;
-	float fwT0 = 2 * ag_PI * cutoff_freq / ag_SAMPLERATE;
-
-	for (int n = -M; n <= M; n++)
-	{
-		int z = n + M;
+	double fwT0 = 2 * ag_PI * cutoffFrequency / ag_SAMPLERATE;
+	for (int n = -M; n <= M; n++) {
 		if (n == 0)
-		{
-			taps[z] = fwT0 / ag_PI * w[z];
-		}
-		else
-		{
-			taps[z] = ag_sin(n * fwT0) / (n * ag_PI) * w[z];
+			taps[n + M] = fwT0 / ag_PI * tapsHammingWindow[n + M];
+		else {
+			taps[n + M] = sin(n * fwT0) / (n * ag_PI) * tapsHammingWindow[n + M];
 		}
 	}
 
-	float fmax = taps[(ntaps - 1) / 2];
-
+	double fmax = taps[0 + M];
 	for (int n = 1; n <= M; n++)
-	{
-		int z = n + M;
-		fmax += 2 * taps[z];
-	}
-
-	float gain = 1.0f;
-	gain /= fmax;    // normalize
-
+		fmax += 2 * taps[n + M];
+	gain /= fmax;
 	for (int i = 0; i < ntaps; i++)
 		taps[i] *= gain;
+
+	//have actual Taps now!!!
+	_taps = taps;
+	_numTaps = ntaps;
+	_buffer = (Complex *)malloc(sizeof(Complex) * (_numTaps * 2 - 1));
+	//TODO: ZERO _buffer
+}
+
+
+void Faltung(Complex* result, const Complex* input, const Complex* taps, unsigned int num_points)
+{
+	Complex * in = (Complex*)input;
+	Complex * tp = (Complex*)taps;
+
+	Complex sum0 = { 0.f, 0.f };
+
+	for (int i = 0; i < num_points; ++i) {
+		
+		sum0.i += in[0].i * tp[0].i - in[0].q * tp[0].q; // real
+		sum0.q += in[0].i * tp[0].q + in[0].q * tp[0].i; // img
+
+		in ++;
+		tp ++;
+	}
+
+	result->i = sum0.i;
+	result->q = sum0.q;
 }
