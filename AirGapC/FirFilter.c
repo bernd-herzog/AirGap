@@ -7,7 +7,7 @@ extern void FirFilter_OnData(ComplexPackage);
 
 extern void FirFilter_InitGaussian();
 extern void FirFilter_InitLowPass();
-void Faltung(Complex*, const Complex*, const Complex*, unsigned int);
+void Faltung(Complex*, const Complex*, const Complex*, int);
 
 Complex *_taps;
 int _numTaps;
@@ -37,13 +37,14 @@ void FirFilter_OnData(ComplexPackage packet)
 	}
 
 	FirFilter_ReportData(ret);
+	free(ret.data);
 }
 
 void FirFilter_InitGaussian()
 {
 	float spb = ag_SAMPLES_PER_SYMBOL;
-	float bt = 1.0f;// *ag_SAMPLES_PER_SYMBOL; // Gaussian filter bandwidth * symbol time.
-	int ntapsGaussian = 4 * ag_SAMPLES_PER_SYMBOL;
+	float bt = 0.65f; // *ag_SAMPLES_PER_SYMBOL; // Gaussian filter bandwidth * symbol time.
+	int ntapsGaussian = 2 * ag_SAMPLES_PER_SYMBOL;
 
 	float *tapsGaussian = (float *)calloc(ntapsGaussian, sizeof(float));
 	float gain = 1.0f;
@@ -106,25 +107,25 @@ void FirFilter_InitLowPass()
 
 	// calculate hamming window
 	float *tapsHammingWindow = (float *)calloc(ntapsHammingWindow, sizeof(float));
-	float M2 = ntapsHammingWindow - 1;
+	float M2 = (float)ntapsHammingWindow - 1;
 	for (int n = 0; n < ntapsHammingWindow; n++)
-		tapsHammingWindow[n] = 0.54 - 0.46 * cos((2 * ag_PI * n) / M2);
+		tapsHammingWindow[n] = 0.54f - 0.46f * ag_cos((2.f * ag_PI * n) / M2);
 
 	//calculate LowPass Window
 	int ntaps = ntapsHammingWindow;
 	Complex *taps = (Complex *)calloc(ntaps, sizeof(Complex));
 
 	int M = (ntaps - 1) / 2;
-	double fwT0 = 2 * ag_PI * cutoffFrequency / ag_SAMPLERATE;
+	float fwT0 = 2.f * ag_PI * cutoffFrequency / ag_SAMPLERATE;
 	for (int n = -M; n <= M; n++) {
 		if (n == 0)
 			taps[n + M].i = fwT0 / ag_PI * tapsHammingWindow[n + M];
 		else {
-			taps[n + M].i = sin(n * fwT0) / (n * ag_PI) * tapsHammingWindow[n + M];
+			taps[n + M].i = ag_sin(n * fwT0) / (n * ag_PI) * tapsHammingWindow[n + M];
 		}
 	}
 
-	double fmax = taps[0 + M].i;
+	float fmax = taps[0 + M].i;
 	for (int n = 1; n <= M; n++)
 		fmax += 2 * taps[n + M].i;
 	gain /= fmax;
@@ -138,7 +139,7 @@ void FirFilter_InitLowPass()
 }
 
 
-void Faltung(Complex* result, const Complex* input, const Complex* taps, unsigned int num_points)
+void Faltung(Complex* result, const Complex* input, const Complex* taps, int num_points)
 {
 	Complex * in = (Complex*)input;
 	Complex * tp = (Complex*)taps;

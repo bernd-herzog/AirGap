@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <dsound.h>
 
-#define BUFFER_SIZE (1024*128)
-#define numbuffers 8
+#define numbuffers 2
+#define BUFFER_SIZE (1024*numbuffers*64)
 
 extern void AudioSink_OnData(ComplexPackage);
 
@@ -163,9 +163,16 @@ void WriteToBuffer(Complex *source, int num)
 
 	short *samples = (short *)buffer;
 
+	const float gain = 0.99f;
+
 	for (int i = 0; i < num; i++)
 	{
-		samples[i] = (short)(source[i].i * (float)0x8000);
+		float gValue = source[i].i * gain;
+		if (gValue < -1.0f || gValue > 1.0f){
+			return;
+		}
+
+		samples[i] = (short)(gValue * (float)0x8000);
 	}
 
 	result = soundBuffer->lpVtbl->Unlock(soundBuffer, buffer, bufferLen, buffer2, bufferLen2);

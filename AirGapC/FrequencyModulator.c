@@ -18,6 +18,13 @@ void FrequencyModulator_OnData(ComplexPackage data)
 	{
 		_position += data.data[i].i * 2 * ag_PI / ag_SAMPLERATE * ag_FREQUENCY_SHIFT;
 
+		while (_position > 8 * ag_PI)
+			_position -= 2 * ag_PI;
+
+		while (_position < 0)
+			_position += 2 * ag_PI;
+
+
 		//float x = 2 * ag_PI * position / ag_SAMPLERATE * (data.data[i].i * ag_FREQUENCY_SHIFT);
 		ret.data[i].i = ag_cos(_position);
 		ret.data[i].q = ag_sin(_position);
