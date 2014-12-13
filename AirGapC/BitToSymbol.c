@@ -9,7 +9,8 @@ void BitToSymbol_OnData(BoolPackage packet)
 {
 	ComplexPackage ret;
 	ret.count = packet.count;
-	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
+	ret.data = (Complex *)calloc(ret.count, sizeof(Complex));
+	
 
 	for (int i = 0; i < ret.count; i++)
 	{

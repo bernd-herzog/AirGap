@@ -6,20 +6,21 @@
 extern void(*FrequencyModulator_ReportData)(ComplexPackage);
 extern void FrequencyModulator_OnData(ComplexPackage);
 
+float _position = .0f;
+
 void FrequencyModulator_OnData(ComplexPackage data)
 {
 	ComplexPackage ret;
 	ret.count = data.count;
 	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
-	int position = 0;
 
 	for (int i = 0; i < data.count; i++)
 	{
-		position++;
+		_position += data.data[i].i * 2 * ag_PI / ag_SAMPLERATE * ag_FREQUENCY_SHIFT;
 
-		float x = 2 * ag_PI * position / ag_SAMPLERATE * (data.data[i].i * 1000);
-		ret.data[i].q = ag_sin(x);
-		ret.data[i].i = ag_cos(x);
+		//float x = 2 * ag_PI * position / ag_SAMPLERATE * (data.data[i].i * ag_FREQUENCY_SHIFT);
+		ret.data[i].i = ag_cos(_position);
+		ret.data[i].q = ag_sin(_position);
 	}
 
 	FrequencyModulator_ReportData(ret);

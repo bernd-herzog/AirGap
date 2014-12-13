@@ -39,6 +39,10 @@ void FileSource_Work()
 
 	free(text);
 
-	FileSource_ReportData(ret);
+	while (true)
+	{
+		FileSource_ReportData(ret);
+	}
+	
 	free(ret.data);
 }

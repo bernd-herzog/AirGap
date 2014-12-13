@@ -9,7 +9,7 @@ extern void FirFilter_InitGaussian();
 extern void FirFilter_InitLowPass();
 void Faltung(Complex*, const Complex*, const Complex*, unsigned int);
 
-float *_taps;
+Complex *_taps;
 int _numTaps;
 Complex *_buffer;
 int _bufferPosition = 0;
@@ -20,9 +20,6 @@ void FirFilter_OnData(ComplexPackage packet)
 	ret.count = packet.count;
 	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
 
-	//Was wir tun ist stink normales falten
-
-	// doppelter buffer
 	for (int i = 0; i < packet.count; i++)
 	{
 		if (_bufferPosition != 0)
@@ -30,7 +27,10 @@ void FirFilter_OnData(ComplexPackage packet)
 		_buffer[_bufferPosition - 1 + _numTaps] = packet.data[i];
 		
 		Faltung(&ret.data[i], _buffer + _bufferPosition, _taps, _numTaps);
-		
+
+		ret.data[i].i /= ag_SAMPLES_PER_SYMBOL;
+		ret.data[i].q /= ag_SAMPLES_PER_SYMBOL;
+
 		_bufferPosition = (_bufferPosition + 1) % _numTaps;
 		if (_bufferPosition >= _numTaps)
 			_bufferPosition -= _numTaps;
@@ -42,21 +42,20 @@ void FirFilter_OnData(ComplexPackage packet)
 void FirFilter_InitGaussian()
 {
 	float spb = ag_SAMPLES_PER_SYMBOL;
-	float bt = 2000.0f * ag_SAMPLES_PER_SYMBOL; // Gaussian filter bandwidth * symbol time.
-	int ntapsGaussian = 4 * ag_SAMPLERATE;
+	float bt = 1.0f;// *ag_SAMPLES_PER_SYMBOL; // Gaussian filter bandwidth * symbol time.
+	int ntapsGaussian = 4 * ag_SAMPLES_PER_SYMBOL;
 
-	float *tapsGaussian = (float *)malloc(ntapsGaussian * sizeof(float));
+	float *tapsGaussian = (float *)calloc(ntapsGaussian, sizeof(float));
 	float gain = 1.0f;
 	
 	float scale = 0.0f;
 	float dt = 1.0f / spb;
 	float s = 1.0f / (ag_sqrt(ag_log(2.0f)) / (2 * ag_PI*bt));
 	float t0 = -0.5f * ntapsGaussian;
-	float ts;
 
 	for (int i = 0; i < ntapsGaussian; i++) {
 		t0++;
-		ts = s*dt*t0;
+		float ts = s*dt*t0;
 		tapsGaussian[i] = ag_exp(-0.5f *ts*ts);
 		scale += tapsGaussian[i];
 	}
@@ -65,14 +64,14 @@ void FirFilter_InitGaussian()
 		tapsGaussian[i] = tapsGaussian[i] / scale * gain;
 
 	//convolve with rectangular window size: ag_SAMPLES_PER_SYMBOL
-	int ntaps = ntapsGaussian + ag_SAMPLES_PER_SYMBOL - 1;
-	float *taps = (float *)malloc(ntaps * sizeof(float));
+	int ntaps = ntapsGaussian + ag_SAMPLES_PER_SYMBOL -1;
+	Complex *taps = (Complex *)calloc(ntaps, sizeof(Complex));
 
 	for (int n = 0; n < ntaps; n++)
 	{
 		size_t kmin, kmax, k;
 
-		taps[n] = 0;
+		taps[n].i = 0;
 
 		kmin = (n >= ntapsGaussian - 1) ? n - (ntapsGaussian - 1) : 0;
 		{
@@ -83,15 +82,13 @@ void FirFilter_InitGaussian()
 
 		for (k = kmin; k <= kmax; k++)
 		{
-			taps[n] += 1.0f * tapsGaussian[n - k];
+			taps[n].i += 1.0f * tapsGaussian[n - k];
 		}
 	}
 
-	//have actual taps now!!!
 	_taps = taps;
 	_numTaps = ntaps;
-	_buffer = (Complex *)malloc(sizeof(Complex) * (_numTaps * 2 - 1));
-	//TODO: ZERO _buffer
+	_buffer = (Complex *)calloc((_numTaps * 2 - 1), sizeof(Complex));
 }
 
 void FirFilter_InitLowPass()
@@ -108,37 +105,36 @@ void FirFilter_InitLowPass()
 		ntapsHammingWindow++;
 
 	// calculate hamming window
-	float *tapsHammingWindow = (float *)malloc(ntapsHammingWindow * sizeof(float));
+	float *tapsHammingWindow = (float *)calloc(ntapsHammingWindow, sizeof(float));
 	float M2 = ntapsHammingWindow - 1;
 	for (int n = 0; n < ntapsHammingWindow; n++)
 		tapsHammingWindow[n] = 0.54 - 0.46 * cos((2 * ag_PI * n) / M2);
 
 	//calculate LowPass Window
 	int ntaps = ntapsHammingWindow;
-	float *taps = (float *)malloc(ntaps * sizeof(float));
+	Complex *taps = (Complex *)calloc(ntaps, sizeof(Complex));
 
 	int M = (ntaps - 1) / 2;
 	double fwT0 = 2 * ag_PI * cutoffFrequency / ag_SAMPLERATE;
 	for (int n = -M; n <= M; n++) {
 		if (n == 0)
-			taps[n + M] = fwT0 / ag_PI * tapsHammingWindow[n + M];
+			taps[n + M].i = fwT0 / ag_PI * tapsHammingWindow[n + M];
 		else {
-			taps[n + M] = sin(n * fwT0) / (n * ag_PI) * tapsHammingWindow[n + M];
+			taps[n + M].i = sin(n * fwT0) / (n * ag_PI) * tapsHammingWindow[n + M];
 		}
 	}
 
-	double fmax = taps[0 + M];
+	double fmax = taps[0 + M].i;
 	for (int n = 1; n <= M; n++)
-		fmax += 2 * taps[n + M];
+		fmax += 2 * taps[n + M].i;
 	gain /= fmax;
 	for (int i = 0; i < ntaps; i++)
-		taps[i] *= gain;
+		taps[i].i *= gain;
 
 	//have actual Taps now!!!
 	_taps = taps;
 	_numTaps = ntaps;
-	_buffer = (Complex *)malloc(sizeof(Complex) * (_numTaps * 2 - 1));
-	//TODO: ZERO _buffer
+	_buffer = (Complex *)calloc((_numTaps * 2 - 1), sizeof(Complex));
 }
 
 

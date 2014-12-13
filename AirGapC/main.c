@@ -19,6 +19,7 @@
 #include "FirFilter.h"
 
 #include <stdbool.h>
+#include "agmath.h"
 
 void AirGap_main()
 {
@@ -26,7 +27,7 @@ void AirGap_main()
 
 	if (isReceiver){
 		FirFilter_InitLowPass();
-		Multiply_SetFrequency(-20000.0f);
+		Multiply_SetFrequency(-ag_BASE_FREQUENCY);
 
 		CONNECT(AudioSource, Multiply);
 		CONNECT(Multiply, FirFilter);
@@ -40,7 +41,7 @@ void AirGap_main()
 	else
 	{
 		FirFilter_InitGaussian();
-		Multiply_SetFrequency(20000.0f);
+		Multiply_SetFrequency(ag_BASE_FREQUENCY);
 
 		CONNECT(FileSource, BitToSymbol);
 		CONNECT(BitToSymbol, Repeater);

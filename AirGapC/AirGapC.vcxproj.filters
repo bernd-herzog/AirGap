@@ -126,4 +126,7 @@
   <ItemGroup>
     <None Include="Makefile" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="testdata.out" />
+  </ItemGroup>
 </Project>

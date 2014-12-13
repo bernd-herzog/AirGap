@@ -124,6 +124,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
+    <Media Include="testdata.out">
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+    </Media>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

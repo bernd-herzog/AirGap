@@ -10,7 +10,8 @@ int numRepeated = ag_SAMPLES_PER_SYMBOL;
 void Repeater_OnData(ComplexPackage data)
 {
 	ComplexPackage ret;
-	ret.data = (Complex *)malloc(numRepeated * data.count * sizeof(Complex));
+	ret.count = data.count * numRepeated;
+	ret.data = (Complex *)calloc(ret.count, sizeof(Complex));
 
 	for (int i = 0; i < data.count; i++)
 	{
