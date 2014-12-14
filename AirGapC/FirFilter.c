@@ -43,7 +43,7 @@ void FirFilter_OnData(ComplexPackage packet)
 void FirFilter_InitGaussian()
 {
 	float spb = ag_SAMPLES_PER_SYMBOL;
-	float bt = 0.65f; // *ag_SAMPLES_PER_SYMBOL; // Gaussian filter bandwidth * symbol time.
+	float bt = 0.65f; // Gaussian filter bandwidth * symbol time.
 	int ntapsGaussian = 2 * ag_SAMPLES_PER_SYMBOL;
 
 	float *tapsGaussian = (float *)calloc(ntapsGaussian, sizeof(float));
