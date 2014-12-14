@@ -2,6 +2,8 @@
 #include "agmath.h"
 #include <stdlib.h>
 
+#include <time.h>
+
 extern void(*FirFilter_ReportData)(ComplexPackage);
 extern void FirFilter_OnData(ComplexPackage);
 
@@ -16,6 +18,8 @@ int _bufferPosition = 0;
 
 void FirFilter_OnData(ComplexPackage packet)
 {
+	clock_t start = clock();
+
 	ComplexPackage ret;
 	ret.count = packet.count;
 	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
@@ -35,6 +39,11 @@ void FirFilter_OnData(ComplexPackage packet)
 		if (_bufferPosition >= _numTaps)
 			_bufferPosition -= _numTaps;
 	}
+
+	clock_t end = clock();
+	float duration = ((float)(end - start)) / CLOCKS_PER_SEC;
+
+	printf("FilFilter Calculated %d samples in %f s\n", packet.count, duration);
 
 	FirFilter_ReportData(ret);
 	free(ret.data);

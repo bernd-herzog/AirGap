@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "agmath.h"
 
+#include <time.h>
+
 extern void(*FrequencyModulator_ReportData)(ComplexPackage);
 extern void FrequencyModulator_OnData(ComplexPackage);
 
@@ -10,6 +12,8 @@ float _position = .0f;
 
 void FrequencyModulator_OnData(ComplexPackage data)
 {
+	clock_t start = clock();
+
 	ComplexPackage ret;
 	ret.count = data.count;
 	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
@@ -29,6 +33,11 @@ void FrequencyModulator_OnData(ComplexPackage data)
 		ret.data[i].i = ag_cos(_position);
 		ret.data[i].q = ag_sin(_position);
 	}
+
+	clock_t end = clock();
+	float duration = ((float)(end - start)) / CLOCKS_PER_SEC;
+
+	printf("FrequencyMod Calculated %d samples in %f s\n", data.count, duration);
 
 	FrequencyModulator_ReportData(ret);
 	free(ret.data);

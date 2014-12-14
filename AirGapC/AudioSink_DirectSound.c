@@ -5,8 +5,12 @@
 #include <stdio.h>
 #include <dsound.h>
 
-#define numbuffers 2
-#define BUFFER_SIZE (1024*numbuffers*64)
+#include "agmath.h"
+
+#include <time.h>
+
+#define numbuffers 4
+#define BUFFER_SIZE ((int)ag_SAMPLERATE*1)
 
 extern void AudioSink_OnData(ComplexPackage);
 
@@ -20,6 +24,8 @@ DWORD ourPosition = 0;
 
 void AudioSink_OnData(ComplexPackage complexPackage)
 {
+	printf("AudioSink Got %d samples (worth %f s of audio)\n", complexPackage.count, (float)complexPackage.count/ag_SAMPLERATE);
+
 	if (soundBuffer == 0)
 	{
 		Init();
@@ -28,10 +34,17 @@ void AudioSink_OnData(ComplexPackage complexPackage)
 	DWORD positionInBuffer = ourPosition % (BUFFER_SIZE / numbuffers);
 
 	int bytesWritten = 0;
+	clock_t waitdurstart, waitdurend;
+	float duration;
 
 	if (positionInBuffer != 0)
 	{
+		waitdurstart = clock();
 		WaitForFreeBuffer();
+		waitdurend = clock();
+		duration = ((float)(waitdurend - waitdurstart)) / CLOCKS_PER_SEC;
+		printf("AudioSink waited1 %f s\n", duration);
+
 
 		//write rest of buffer
 		int bytesInBufferLeft = (BUFFER_SIZE / numbuffers) - positionInBuffer;
@@ -50,7 +63,12 @@ void AudioSink_OnData(ComplexPackage complexPackage)
 
 	while (complexPackage.count * 2 - bytesWritten > (BUFFER_SIZE / numbuffers))
 	{
+		waitdurstart = clock();
 		WaitForFreeBuffer();
+		waitdurend = clock();
+		duration = ((float)(waitdurend - waitdurstart)) / CLOCKS_PER_SEC;
+		printf("AudioSink waited2 %f s\n", duration);
+
 		WriteToBuffer(complexPackage.data + (bytesWritten / 2), (BUFFER_SIZE / numbuffers) /2);
 
 		bytesWritten += (BUFFER_SIZE / numbuffers);
@@ -58,7 +76,13 @@ void AudioSink_OnData(ComplexPackage complexPackage)
 
 	if (complexPackage.count * 2 > bytesWritten)
 	{
+		waitdurstart = clock();
 		WaitForFreeBuffer();
+		WaitForFreeBuffer();
+		waitdurend = clock();
+		duration = ((float)(waitdurend - waitdurstart)) / CLOCKS_PER_SEC;
+		printf("AudioSink waited3 %f s\n", duration);
+
 		WriteToBuffer(complexPackage.data + (bytesWritten / 2), complexPackage.count - bytesWritten / 2);
 	}
 }

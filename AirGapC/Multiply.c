@@ -31,7 +31,7 @@ void Multiply_OnData(ComplexPackage data)
 		ret.data[i].i = data.data[i].i * x_r - data.data[i].q * x_i;
 		ret.data[i].q = data.data[i].i * x_i + data.data[i].q * x_r;
 	}
-	
+
 	Multiply_ReportData(ret);
 	free(ret.data);
 	return;

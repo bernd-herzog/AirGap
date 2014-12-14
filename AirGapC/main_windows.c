@@ -21,3 +21,10 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	
 	return 0;
 }
+
+int main(int argc, char **argv)
+{
+	AirGap_main();
+
+	return 0;
+}
