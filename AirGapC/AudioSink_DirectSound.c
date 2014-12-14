@@ -84,7 +84,7 @@ void Init()
 	waveformat.cbSize = sizeof(WAVEFORMATEX);
 
 	waveformat.wFormatTag = WAVE_FORMAT_PCM;
-	waveformat.nSamplesPerSec = 44100;
+	waveformat.nSamplesPerSec = ag_SAMPLERATE;
 	waveformat.nChannels = 1;
 	waveformat.wBitsPerSample = 16;
 
