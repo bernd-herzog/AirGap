@@ -42,6 +42,7 @@ void AirGap_main()
 	{
 		FirFilter_InitGaussian();
 		Multiply_SetFrequency(ag_BASE_FREQUENCY);
+		ClockRecovery_Init();
 
 		CONNECT(FileSource, BitToSymbol);
 		CONNECT(BitToSymbol, Repeater);
