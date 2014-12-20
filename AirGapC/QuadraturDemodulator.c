@@ -1,6 +1,7 @@
 #include "QuadraturDemodulator.h"
 #include "DataTypes.h"
 #include <stdlib.h>
+#include "agmath.h"
 
 extern void(*QuadraturDemodulator_ReportData)(FloatPackage);
 extern void QuadraturDemodulator_OnData(ComplexPackage);
@@ -8,27 +9,41 @@ extern void QuadraturDemodulator_OnData(ComplexPackage);
 float fast_atan2f(float, float);
 float fabs2(float);
 
+
+
 void QuadraturDemodulator_OnData(ComplexPackage packet)
 {
+	static Complex _lastValue = {0.0f, 1.0f};
+
 	FloatPackage ret;
 	ret.count = packet.count;
 	ret.data = (float *)malloc(packet.count * sizeof(float));
 
-	for (int i = 1; i < packet.count; i++){
+	for (int i = 0; i < packet.count; i++){
 
-		Complex conjugate;
-		conjugate.i = packet.data[i - 1].i;
-		conjugate.q = -packet.data[i - 1].q;
+		Complex conjugate = _lastValue;
+		conjugate.q = -conjugate.q;
+		//conjugate.i = packet.data[i - 1].i;
+		//conjugate.q = -packet.data[i - 1].q;
 
 		Complex in = packet.data[i];
+
+		//float gain = 5000.f;
+
+		//in.i *= gain;
+		//in.q *= gain;
 
 		Complex product;
 		product.i = in.i * conjugate.i - (in.q * conjugate.q);
 		product.q = in.i * conjugate.q + (in.q * conjugate.i);
 		
-		float gain = 1.0f;
+		_lastValue = in;
+		//float gain = 1.0f;
 
-		float ret = fast_atan2f(product.i, product.q);
+		//float mValue = fast_atan2f(in.i, in.q);
+		float retValue = fast_atan2f(product.i, product.q);
+
+		ret.data[i] = retValue / (2 * ag_PI / ag_SAMPLERATE * ag_FREQUENCY_SHIFT);
 	}
 
 	QuadraturDemodulator_ReportData(ret);
@@ -112,7 +127,7 @@ REAL fast_atan_table[257] = {
 
 float fabs2(float val)
 {
-	if (val < val)
+	if (val < 0.f)
 		return -val;
 	return val;
 }

@@ -1,9 +1,13 @@
 #include "AudioSource.h"
 #include "DataTypes.h"
+#include "agmath.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <dsound.h>
+
+#include <time.h>
+
 
 #define BUFFER_SIZE (1024*128)
 #define numbuffers 8
@@ -15,6 +19,9 @@ void InitInput();
 void RunLoop();
 ComplexPackage ReadData();
 bool WaitForData();
+void AudioSource_DS_WaitForFreeBuffer();
+DWORD _ourPosition = 0;
+
 
 HANDLE g_event;
 LPDIRECTSOUNDCAPTUREBUFFER g_captureBuffer;
@@ -35,7 +42,7 @@ void InitInput()
 	waveformat.cbSize = sizeof(WAVEFORMATEX);
 
 	waveformat.wFormatTag = WAVE_FORMAT_PCM;
-	waveformat.nSamplesPerSec = 44100;
+	waveformat.nSamplesPerSec = ag_SAMPLERATE;
 	waveformat.nChannels = 1;
 	waveformat.wBitsPerSample = 16;
 
@@ -85,10 +92,12 @@ void RunLoop()
 {
 	while (true)
 	{
-		bool hasData = WaitForData();
+		//bool hasData = WaitForData();
 
-		if (hasData)
+		//if (hasData)
 		{
+			AudioSource_DS_WaitForFreeBuffer();
+
 			ComplexPackage data = ReadData();
 
 			AudioSource_ReportData(data);
@@ -112,11 +121,11 @@ ComplexPackage ReadData()
 
 	HRESULT res = g_captureBuffer->lpVtbl->GetCurrentPosition(g_captureBuffer, &capturePosition, &readPosition);
 
-	int lockSize = readPosition - caputureOffset;
-	if (lockSize < 0)
-		lockSize += BUFFER_SIZE;
+	//int lockSize = readPosition - caputureOffset;
+	//if (lockSize < 0)
+	//	lockSize += BUFFER_SIZE;
 
-	lockSize -= (lockSize % (BUFFER_SIZE / numbuffers));
+	//lockSize -= (lockSize % (BUFFER_SIZE / numbuffers));
 
 	caputureOffset = readPosition - readPosition % (BUFFER_SIZE / numbuffers) - (BUFFER_SIZE / numbuffers);
 	if (caputureOffset < 0)
@@ -125,9 +134,9 @@ ComplexPackage ReadData()
 	void *pData1, *pData2;
 	DWORD len1, len2;
 
-	res = g_captureBuffer->lpVtbl->Lock(g_captureBuffer, caputureOffset, lockSize, &pData1, &len1, &pData2, &len2, 0L);
+	res = g_captureBuffer->lpVtbl->Lock(g_captureBuffer, caputureOffset, (BUFFER_SIZE / numbuffers), &pData1, &len1, &pData2, &len2, 0L);
 
-	int countSamples = len1;
+	int countSamples = len1 / 2;
 
 	ComplexPackage ret;
 	ret.count = countSamples;
@@ -137,8 +146,10 @@ ComplexPackage ReadData()
 
 	for (int i = 0; i < countSamples; i++)
 	{
-		ret.data[i].i = bufferData[i];
-		ret.data[i].q = bufferData[i];
+		float sampleValue = ((float)bufferData[i] / 0x8000);
+
+		ret.data[i].i = sampleValue;
+		ret.data[i].q =  sampleValue;
 	}
 
 	if (pData1)
@@ -146,8 +157,51 @@ ComplexPackage ReadData()
 		res = g_captureBuffer->lpVtbl->Unlock(g_captureBuffer, pData1, len1, pData2, len2);
 	}
 
+	//TODO: remove caputureOffset
 	caputureOffset += len1;
+	_ourPosition += len1;
+
 	caputureOffset %= BUFFER_SIZE;
+	_ourPosition %= BUFFER_SIZE;
 
 	return ret;
+}
+
+void AudioSource_DS_WaitForFreeBuffer()
+{
+	while (true)
+	{
+		DWORD playPosition, writePosition;
+
+		//do we have to wait?
+		HRESULT result = g_captureBuffer->lpVtbl->GetCurrentPosition(g_captureBuffer, &playPosition, &writePosition);
+
+		DWORD part = writePosition % (BUFFER_SIZE / numbuffers);
+		DWORD buffer = writePosition / (BUFFER_SIZE / numbuffers);
+
+		DWORD ourBuffer = _ourPosition / (BUFFER_SIZE / numbuffers);
+
+		//printf("Wait: read in %d, read in %d\n", ourBuffer, buffer);
+
+		if (ourBuffer == buffer)
+		{
+			clock_t waitdurstart, waitdurend;
+			float duration;
+
+			waitdurstart = clock();
+
+			DWORD dwResult = MsgWaitForMultipleObjects(1, &g_event, FALSE, INFINITE, QS_ALLEVENTS);
+
+			waitdurend = clock();
+			duration = ((float)(waitdurend - waitdurstart)) / CLOCKS_PER_SEC;
+			//printf("AudioSource waited %f s\n", duration);
+
+			if (dwResult != S_OK)
+				return;
+		}
+		else
+		{
+			break;
+		}
+	}
 }

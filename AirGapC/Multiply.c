@@ -25,6 +25,9 @@ void Multiply_OnData(ComplexPackage data)
 		if (_Multiply_position > 2 * ag_PI)
 			_Multiply_position -= 2 * ag_PI;
 
+		if (_Multiply_position < 0.f)
+			_Multiply_position += 2 * ag_PI;
+
 		float x_i = ag_sin(_Multiply_position);
 		float x_r = ag_cos(_Multiply_position);
 

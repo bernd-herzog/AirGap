@@ -17,10 +17,10 @@ void BinarySlicer_OnData(FloatPackage packet)
 	for (int i = 0; i < ret.count; i++)
 	{
 		if (packet.data[i] < 0){
-			packet.data[i] = false;
+			ret.data[i] = true;
 		}
 		else{
-			packet.data[i] = true;
+			ret.data[i] = false;
 		}
 	}
 

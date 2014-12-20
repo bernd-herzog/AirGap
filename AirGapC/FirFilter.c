@@ -32,8 +32,8 @@ void FirFilter_OnData(ComplexPackage packet)
 		
 		Faltung(&ret.data[i], _buffer + _bufferPosition, _taps, _numTaps);
 
-		ret.data[i].i /= ag_SAMPLES_PER_SYMBOL;
-		ret.data[i].q /= ag_SAMPLES_PER_SYMBOL;
+		ret.data[i].i /= ag_FREQUENCY_SHIFT_SYMBOLS;
+		ret.data[i].q /= ag_FREQUENCY_SHIFT_SYMBOLS;
 
 		_bufferPosition = (_bufferPosition + 1) % _numTaps;
 		if (_bufferPosition >= _numTaps)
@@ -43,7 +43,7 @@ void FirFilter_OnData(ComplexPackage packet)
 	clock_t end = clock();
 	float duration = ((float)(end - start)) / CLOCKS_PER_SEC;
 
-	printf("FilFilter Calculated %d samples in %f s\n", packet.count, duration);
+	//printf("FilFilter Calculated %d samples in %f s\n", packet.count, duration);
 
 	FirFilter_ReportData(ret);
 	free(ret.data);
@@ -51,9 +51,10 @@ void FirFilter_OnData(ComplexPackage packet)
 
 void FirFilter_InitGaussian()
 {
-	float spb = ag_SAMPLES_PER_SYMBOL;
+
+	float spb = ag_FREQUENCY_SHIFT_SYMBOLS;
 	float bt = 0.65f; // Gaussian filter bandwidth * symbol time.
-	int ntapsGaussian = 2 * ag_SAMPLES_PER_SYMBOL;
+	int ntapsGaussian = 4 * ag_FREQUENCY_SHIFT_SYMBOLS;
 
 	float *tapsGaussian = (float *)calloc(ntapsGaussian, sizeof(float));
 	float gain = 1.0f;
@@ -74,7 +75,7 @@ void FirFilter_InitGaussian()
 		tapsGaussian[i] = tapsGaussian[i] / scale * gain;
 
 	//convolve with rectangular window size: ag_SAMPLES_PER_SYMBOL
-	int ntaps = ntapsGaussian + ag_SAMPLES_PER_SYMBOL -1;
+	int ntaps = ntapsGaussian + ag_FREQUENCY_SHIFT_SYMBOLS - 1;
 	Complex *taps = (Complex *)calloc(ntaps, sizeof(Complex));
 
 	for (int n = 0; n < ntaps; n++)
@@ -85,9 +86,9 @@ void FirFilter_InitGaussian()
 
 		kmin = (n >= ntapsGaussian - 1) ? n - (ntapsGaussian - 1) : 0;
 		{
-			kmax = (n < spb - 1)
+			kmax = (n < ag_FREQUENCY_SHIFT_SYMBOLS - 1)
 				? n 
-				: ag_SAMPLES_PER_SYMBOL - 1;
+				: ag_FREQUENCY_SHIFT_SYMBOLS - 1;
 		}
 
 		for (k = kmin; k <= kmax; k++)
@@ -105,8 +106,8 @@ void FirFilter_InitLowPass()
 {
 	// variables
 	float maxAttenuation = 53; //for hamming
-	float transitionWidth = 100.0f;
-	float cutoffFrequency = 1000.0f;
+	float transitionWidth = 50.0f;
+	float cutoffFrequency = 1200.0f;
 	float gain = 1.0f;
 
 	// calculate num taps for hamming WINDOW

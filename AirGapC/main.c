@@ -23,14 +23,16 @@
 
 void AirGap_main()
 {
-	bool isReceiver = false;
+	bool isReceiver = true;
 
 	if (isReceiver){
 		FirFilter_InitLowPass();
 		Multiply_SetFrequency(-ag_BASE_FREQUENCY);
+		ClockRecovery_Init();
 
 		CONNECT(AudioSource, Multiply);
 		CONNECT(Multiply, FirFilter);
+		CONNECT(Multiply, QuadraturDemodulator);
 		CONNECT(FirFilter, QuadraturDemodulator);
 		CONNECT(QuadraturDemodulator, ClockRecovery);
 		CONNECT(ClockRecovery, BinarySlicer);
@@ -42,7 +44,6 @@ void AirGap_main()
 	{
 		FirFilter_InitGaussian();
 		Multiply_SetFrequency(ag_BASE_FREQUENCY);
-		ClockRecovery_Init();
 
 		CONNECT(FileSource, BitToSymbol);
 		CONNECT(BitToSymbol, Repeater);

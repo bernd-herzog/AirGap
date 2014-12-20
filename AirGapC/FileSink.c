@@ -15,8 +15,12 @@ void FileSink_OnData(BoolPackage packet)
 
 		for (int j = 0; j < 8; j++)
 		{
-			byte |= packet.data[i + j] < j;
+			char bit = packet.data[i + j] == false ? 0 : 1;
+
+			byte |= bit << j;
 		}
+
+		printf("%c\n", byte);
 
 		fwrite(&byte, sizeof(char), 1, o_file);
 	}

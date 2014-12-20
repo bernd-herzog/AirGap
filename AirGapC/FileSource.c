@@ -25,12 +25,16 @@ void FileSource_Work()
 
 	ret.data = (bool *)malloc(ret.count * sizeof(bool));
 
+
+	static int k = 0;
+
 	for (int i = 0; i < fsize ; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			if (((text[i] >> j) & 0x01) == 0x01){
-				ret.data[i * 8 + (7-j)] = true;
+			if (k++ % 2 == 0){
+			//if (((text[i] >> j) & 0x01) == 0x01){
+				ret.data[i * 8 + (7 - j)] = true;
 			}else{
 				ret.data[i * 8 + (7-j)] = false;
 			}
