@@ -12,15 +12,13 @@ void BinarySlicer_OnData(FloatPackage packet)
 	ret.count = packet.count;
 	ret.data = (bool *)malloc(ret.count * sizeof(bool));
 
-	//TODO: jedes float in false oder true umwandeln
-
 	for (int i = 0; i < ret.count; i++)
 	{
-		if (packet.data[i] < 0){
-			ret.data[i] = true;
+		if (packet.data[i] < 0.f){
+			ret.data[i] = false;
 		}
 		else{
-			ret.data[i] = false;
+			ret.data[i] = true;
 		}
 	}
 

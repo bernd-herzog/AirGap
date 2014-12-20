@@ -9,21 +9,32 @@ void FileSink_OnData(BoolPackage packet)
 	FILE *o_file;
 	o_file = fopen(filename, "ab");
 
-	for (int i = 0; i < packet.count; i+=8)
+
+	for (int k = 0; k < 8; k++)
 	{
-		unsigned char byte = 0;
 
-		for (int j = 0; j < 8; j++)
+
+
+		for (int i = 0; i < packet.count - 8; i += 8)
 		{
-			char bit = packet.data[i + j] == false ? 0 : 1;
+			unsigned char byte = 0;
 
-			byte |= bit << j;
+			for (int j = 0; j < 8; j++)
+			{
+				char bit = packet.data[i + j + k] == true ? 1 : 0;
+
+				byte |= bit << 7-j;
+			}
+
+			printf("%c", byte);
+
+			fwrite(&byte, sizeof(char), 1, o_file);
 		}
 
-		printf("%c\n", byte);
+		printf("\t");
 
-		fwrite(&byte, sizeof(char), 1, o_file);
 	}
+	printf("\n");
 
 	fclose(o_file);
 }

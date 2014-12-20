@@ -15,6 +15,7 @@ int _ClockRecovery_offset = 0;
 int _ClockRecovery_position = 0;
 
 #define barrier 0.6f
+int lastMaxPosition = 0;
 
 
 void ClockRecovery_OnData(FloatPackage packet)
@@ -81,42 +82,48 @@ void ClockRecovery_OnData(FloatPackage packet)
 				}
 			}
 			//			else
-			
-			//if (_offset == _ClockRecovery_position)
-			if (_ClockRecovery_position - _ClockRecovery_offset == 0)
-			{
-				int maxPosition = -1;
-				float maxValue = 0;
 
-				for (int i = 0; i < ag_SAMPLES_PER_SYMBOL; i++)
+			//if (_offset == _ClockRecovery_position)
+			if (_ClockRecovery_position == 0)
+			{
+				int maxPosition = lastMaxPosition;
+
+				if (ag_abs(_lastAverages[lastMaxPosition]) < 0.7f)
 				{
-					float absValue = ag_abs(_lastAverages[i]);
-					if (absValue > maxValue)
+
+					float maxValue = 0;
+
+					for (int i = 0; i < ag_SAMPLES_PER_SYMBOL; i++)
 					{
-						maxValue = absValue;
-						maxPosition = i;
+						float absValue = ag_abs(_lastAverages[i]);
+						if (absValue > maxValue)
+						{
+							maxValue = absValue;
+							maxPosition = i;
+						}
 					}
+					lastMaxPosition = maxPosition;
 				}
 
 				float inValue = _lastAverages[maxPosition];
 
 				//if (ag_abs(inValue) > barrier)
 
-				printf("bit found at %d\n", maxPosition);
+				//printf("bit found at %d\n", maxPosition);
 
-				int barr = ag_SAMPLES_PER_SYMBOL / 10;
+				//int barr = ag_SAMPLES_PER_SYMBOL / 10;
 
-				if (maxPosition < barr){
-					_ClockRecovery_offset = (_ClockRecovery_offset + ag_SAMPLES_PER_SYMBOL / 2) % ag_SAMPLES_PER_SYMBOL;
-				}
+				//if (maxPosition < barr){
+				//	_ClockRecovery_offset = (_ClockRecovery_offset + ag_SAMPLES_PER_SYMBOL / 2) % ag_SAMPLES_PER_SYMBOL;
+				//}
 
-				if (maxPosition > ag_SAMPLES_PER_SYMBOL - barr){
-					_ClockRecovery_offset = (_ClockRecovery_offset + ag_SAMPLES_PER_SYMBOL / 2) % ag_SAMPLES_PER_SYMBOL;
-				}
+				//if (maxPosition > ag_SAMPLES_PER_SYMBOL - barr){
+				//	_ClockRecovery_offset = (_ClockRecovery_offset + ag_SAMPLES_PER_SYMBOL / 2) % ag_SAMPLES_PER_SYMBOL;
+				//}
 
 				ret.data[numByte++] = inValue;
 			}
-		
+
 		}
 
 		_ClockRecovery_position = (_ClockRecovery_position + 1) % ag_SAMPLES_PER_SYMBOL;

@@ -32,7 +32,6 @@ void AirGap_main()
 
 		CONNECT(AudioSource, Multiply);
 		CONNECT(Multiply, FirFilter);
-		CONNECT(Multiply, QuadraturDemodulator);
 		CONNECT(FirFilter, QuadraturDemodulator);
 		CONNECT(QuadraturDemodulator, ClockRecovery);
 		CONNECT(ClockRecovery, BinarySlicer);
