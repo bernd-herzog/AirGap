@@ -7,7 +7,6 @@ extern void(*Multiply_ReportData)(ComplexPackage);
 extern void Multiply_OnData(ComplexPackage);
 extern void Multiply_SetFrequency(float);
 
-const int sampleRate;
 float _frequency;
 
 float _Multiply_position = 0;

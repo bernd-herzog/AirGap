@@ -37,7 +37,7 @@ void FrequencyModulator_OnData(ComplexPackage data)
 	clock_t end = clock();
 	float duration = ((float)(end - start)) / CLOCKS_PER_SEC;
 
-	printf("FrequencyMod Calculated %d samples in %f s\n", data.count, duration);
+	//printf("FrequencyMod Calculated %d samples in %f s\n", data.count, duration);
 
 	FrequencyModulator_ReportData(ret);
 	free(ret.data);

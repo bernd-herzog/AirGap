@@ -1,6 +1,10 @@
-all:
-	cc -lm -std=c99 main_linux.c main.c AudioSink_Alsa.c ClockRecovery.c FrequencyModulator.c AudioSource_Alsa.c BandPassFilter.c FileSink.c Multiply.c BinarySlicer.c FileSource.c QuadraturDemodulator.c BitToSymbol.c FirFilter.c agmath.c -o airgap
+all: agsender agreceiver
+
+agsender:
+	gcc -std=c99 src/main_sender.c src/AudioSink_Alsa.c src/FileSource.c src/BitToSymbol.c src/Repeater.c src/FrequencyModulator.c src/Multiply.c src/FirFilter.c src/agmath.c -o agsender -lm
+
+agreceiver:
+	gcc -std=c99 src/main_receiver.c src/AudioSource_Alsa.c src/FileSink.c src/BinarySlicer.c src/ClockRecovery.c src/QuadraturDemodulator.c src/Multiply.c src/FirFilter.c src/agmath.c -o agreceiver -lm
 
 clean:
-	rm airgap
-
+	rm -f agsender agreceiver

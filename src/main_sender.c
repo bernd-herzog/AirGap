@@ -21,18 +21,19 @@
 #include <stdbool.h>
 #include "agmath.h"
 
-#include <SDKDDKVer.h>
-
-#define WIN32_LEAN_AND_MEAN             // Selten verwendete Teile der Windows-Header nicht einbinden.
-
-#include <windows.h>
-#include <tchar.h>
+#ifdef WIN32
+	#define WIN32_LEAN_AND_MEAN
+	#include <SDKDDKVer.h>
+	#include <windows.h>
+	#include <tchar.h>
+#endif
 
 #include "main.h"
 
 void AirGap_main();
 
 
+#ifdef WIN32
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPTSTR    lpCmdLine,
@@ -47,6 +48,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 	return 0;
 }
+#endif
 
 int main(int argc, char **argv)
 {
