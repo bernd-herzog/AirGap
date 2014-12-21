@@ -5,6 +5,10 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AirGapC", "AirGapC\AirGapC.vcxproj", "{36FA7726-A51F-4671-B7B2-5039BA17B8C3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AirGapSender", "AirGapSender\AirGapSender.vcxproj", "{0D7F6385-8750-4BB2-9CE9-9430D19838AD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AirGapReceiver", "AirGapReceiver\AirGapReceiver.vcxproj", "{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,26 @@ Global
 		{36FA7726-A51F-4671-B7B2-5039BA17B8C3}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{36FA7726-A51F-4671-B7B2-5039BA17B8C3}.Release|Win32.ActiveCfg = Release|Win32
 		{36FA7726-A51F-4671-B7B2-5039BA17B8C3}.Release|Win32.Build.0 = Release|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Debug|Win32.Build.0 = Debug|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Release|Any CPU.ActiveCfg = Release|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Release|Win32.ActiveCfg = Release|Win32
+		{0D7F6385-8750-4BB2-9CE9-9430D19838AD}.Release|Win32.Build.0 = Release|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Debug|Win32.Build.0 = Debug|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Release|Any CPU.ActiveCfg = Release|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Release|Win32.ActiveCfg = Release|Win32
+		{9CF87913-8ABF-4075-AA30-6DCC9659EFA1}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

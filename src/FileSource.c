@@ -25,7 +25,6 @@ void FileSource_Work()
 
 	ret.data = (bool *)malloc(ret.count * sizeof(bool));
 
-
 	static int k = 0;
 
 	for (int i = 0; i < fsize ; i++)

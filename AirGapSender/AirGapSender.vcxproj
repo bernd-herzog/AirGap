@@ -56,6 +56,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,6 +77,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\agmath.c" />
+    <ClCompile Include="..\src\AudioSink_DirectSound.c" />
+    <ClCompile Include="..\src\BitToSymbol.c" />
+    <ClCompile Include="..\src\FileSource.c" />
+    <ClCompile Include="..\src\FirFilter.c" />
+    <ClCompile Include="..\src\FrequencyModulator.c" />
+    <ClCompile Include="..\src\main_sender.c" />
+    <ClCompile Include="..\src\Multiply.c" />
+    <ClCompile Include="..\src\Repeater.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\agmath.h" />
+    <ClInclude Include="..\src\AudioSink.h" />
+    <ClInclude Include="..\src\BitToSymbol.h" />
+    <ClInclude Include="..\src\DataTypes.h" />
+    <ClInclude Include="..\src\FileSource.h" />
+    <ClInclude Include="..\src\FirFilter.h" />
+    <ClInclude Include="..\src\FrequencyModulator.h" />
+    <ClInclude Include="..\src\main.h" />
+    <ClInclude Include="..\src\Multiply.h" />
+    <ClInclude Include="..\src\Repeater.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

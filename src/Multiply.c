@@ -20,9 +20,9 @@ void Multiply_OnData(ComplexPackage data)
 
 	for (int i = 0; i < data.count; i++)
 	{
-		_Multiply_position += 2 * ag_PI / ag_SAMPLERATE * _frequency;
+		_Multiply_position += 2.f * ag_PI / ag_SAMPLERATE * _frequency;
 
-		if (_Multiply_position > 2 * ag_PI)
+		if (_Multiply_position > 2.f * ag_PI)
 			_Multiply_position -= 2 * ag_PI;
 
 		if (_Multiply_position < 0.f)

@@ -9,12 +9,8 @@ void FileSink_OnData(BoolPackage packet)
 	FILE *o_file;
 	o_file = fopen(filename, "ab");
 
-
 	for (int k = 0; k < 8; k++)
 	{
-
-
-
 		for (int i = 0; i < packet.count - 8; i += 8)
 		{
 			unsigned char byte = 0;
