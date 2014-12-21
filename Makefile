@@ -1,10 +1,26 @@
+CC=gcc
+CFLAGS=-std=c99
+LIBS=-lm
+SRCDIR=src
+
+SHAREDMODULES = Multiply FirFilter agmath
+SENDERMODULES = main_sender AudioSink_Alsa FileSource BitToSymbol Repeater FrequencyModulator $(SHAREDMODULES)
+RECEIVERMODULES= main_receiver AudioSource_Alsa FileSink BinarySlicer ClockRecovery QuadraturDemodulator $(SHAREDMODULES)
+
+SENDEROBJ = $(foreach module, $(SENDERMODULES), $(SRCDIR)/$(module).o)
+RECEIVEROBJ = $(foreach module, $(RECEIVERMODULES), $(SRCDIR)/$(module).o)
+
 all: agsender agreceiver
 
-agsender:
-	gcc -std=c99 src/main_sender.c src/AudioSink_Alsa.c src/FileSource.c src/BitToSymbol.c src/Repeater.c src/FrequencyModulator.c src/Multiply.c src/FirFilter.c src/agmath.c -o agsender -lm
+agsender: $(SENDEROBJ)
+	$(CC) $(CFLAGS) $(SENDEROBJ) -o agsender $(LIBS)
 
-agreceiver:
-	gcc -std=c99 src/main_receiver.c src/AudioSource_Alsa.c src/FileSink.c src/BinarySlicer.c src/ClockRecovery.c src/QuadraturDemodulator.c src/Multiply.c src/FirFilter.c src/agmath.c -o agreceiver -lm
+agreceiver: $(RECEIVEROBJ)
+	$(CC) $(CFLAGS) $(RECEIVEROBJ) -o agreceiver $(LIBS)
+
+
+%.o: %.c
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
-	rm -f agsender agreceiver
+	rm -f agsender agreceiver $(SRCDIR)/*.o

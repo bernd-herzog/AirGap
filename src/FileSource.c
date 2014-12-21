@@ -10,7 +10,7 @@ extern void FileSource_Work();
 void FileSource_Work()
 {
 	BoolPackage ret;
-	const char *filename = "testdata.out";
+	const char *filename = "source.txt";
 	FILE *i_file;
 	i_file = fopen(filename, "rb");
 	fseek(i_file, 0, SEEK_END);

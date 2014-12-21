@@ -5,7 +5,7 @@ extern void FileSink_OnData(BoolPackage);
 
 void FileSink_OnData(BoolPackage packet)
 {
-	char *filename = "testdaten.txt";
+	char *filename = "sink.txt";
 	FILE *o_file;
 	o_file = fopen(filename, "ab");
 
