@@ -9,7 +9,7 @@
 #include <time.h>
 
 
-#define BUFFER_SIZE (1024*512)
+#define BUFFER_SIZE (1024*1024)
 #define numbuffers 8
 
 extern void(*AudioSource_ReportData)(ComplexPackage);
