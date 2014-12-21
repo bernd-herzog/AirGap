@@ -4,8 +4,8 @@ LIBS=-lm
 SRCDIR=src
 
 SHAREDMODULES = Multiply FirFilter agmath
-SENDERMODULES = main_sender AudioSink_Alsa FileSource BitToSymbol Repeater FrequencyModulator $(SHAREDMODULES)
-RECEIVERMODULES= main_receiver AudioSource_Alsa FileSink BinarySlicer ClockRecovery QuadraturDemodulator $(SHAREDMODULES)
+SENDERMODULES =   main_sender   Packetizer   AudioSink_Alsa   FileSource BitToSymbol  Repeater      FrequencyModulator   $(SHAREDMODULES)
+RECEIVERMODULES = main_receiver Depacketizer AudioSource_Alsa FileSink   BinarySlicer ClockRecovery QuadraturDemodulator $(SHAREDMODULES)
 
 SENDEROBJ = $(foreach module, $(SENDERMODULES), $(SRCDIR)/$(module).o)
 RECEIVEROBJ = $(foreach module, $(RECEIVERMODULES), $(SRCDIR)/$(module).o)

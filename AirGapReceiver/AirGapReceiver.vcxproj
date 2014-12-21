@@ -54,7 +54,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -81,6 +81,7 @@
     <ClCompile Include="..\src\AudioSource_DirectSound.c" />
     <ClCompile Include="..\src\BinarySlicer.c" />
     <ClCompile Include="..\src\ClockRecovery.c" />
+    <ClCompile Include="..\src\Depacketizer.c" />
     <ClCompile Include="..\src\FileSink.c" />
     <ClCompile Include="..\src\FirFilter.c" />
     <ClCompile Include="..\src\main_receiver.c" />
@@ -93,6 +94,7 @@
     <ClInclude Include="..\src\BinarySlicer.h" />
     <ClInclude Include="..\src\ClockRecovery.h" />
     <ClInclude Include="..\src\DataTypes.h" />
+    <ClInclude Include="..\src\Depacketizer.h" />
     <ClInclude Include="..\src\FileSink.h" />
     <ClInclude Include="..\src\FirFilter.h" />
     <ClInclude Include="..\src\main.h" />

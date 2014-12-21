@@ -54,7 +54,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -85,6 +85,7 @@
     <ClCompile Include="..\src\FrequencyModulator.c" />
     <ClCompile Include="..\src\main_sender.c" />
     <ClCompile Include="..\src\Multiply.c" />
+    <ClCompile Include="..\src\Packetizer.c" />
     <ClCompile Include="..\src\Repeater.c" />
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +98,11 @@
     <ClInclude Include="..\src\FrequencyModulator.h" />
     <ClInclude Include="..\src\main.h" />
     <ClInclude Include="..\src\Multiply.h" />
+    <ClInclude Include="..\src\Packetizer.h" />
     <ClInclude Include="..\src\Repeater.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="source.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
