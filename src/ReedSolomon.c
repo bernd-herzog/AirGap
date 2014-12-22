@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "agmath.h"
+#include <string.h>
 
 
 #define nsym ag_ERRORCORRECTIONSIZE
@@ -195,13 +196,13 @@ void rs_find_errors(unsigned char err_pos[], unsigned char synd[], int *err_pos_
 	{
 		//Es sind zu viele Fehler zum Korrigieren!!! Hier ein abbruch rein!!!!!!!!!!!!!!!!!!!!!!!!
 	}
-	unsigned char gf_poly_eval_out[ag_PACKETSIZE];
-	for (int k = 0; k < ag_PACKETSIZE; k++)
+	unsigned char gf_poly_eval_out[ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE];
+	for (int k = 0; k < ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE; k++)
 	{
 		gf_poly_eval(err_poly, gf_exp[255 - k], gf_poly_eval_out, err_poly_size, k);
 		if (gf_poly_eval_out[k] == 0)
 		{
-			err_pos[count] = (ag_PACKETSIZE - 1 - k);
+			err_pos[count] = (ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE - 1 - k);
 			count++;
 		}
 	}
@@ -290,32 +291,30 @@ void rs_correct_errata(unsigned char msg[], unsigned char synd[], unsigned char 
 	free(s);
 }
 
-
 void rs_correct_msg(unsigned char *msg_out)
 {
 	//unsigned char msg_out[size];
 	//unsigned char erase_pos[nsym]; //man könnte noch gelöschte symbole erkennung hinzufügen (wenn man weiß, das gelöscht wurde dann kann man bis zu nsym gelöschte chars rekonstruieren), ist aber glaube ich etwas tricky
-	unsigned char synd[nsym];
-	//for(int x=0; x<size;x++)
-	//{
-	//	msg_out[x]=msg[x];
-	//}
-	rs_calc_syndromes(msg_out, synd, ag_PACKETSIZE);
+	unsigned char synd[ag_ERRORCORRECTIONSIZE];
+	memset(synd, 0, ag_ERRORCORRECTIONSIZE);
 
-	for (int w = 0; w < nsym; w++)
+	rs_calc_syndromes(msg_out, synd, ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE);
+	for (int w = 0; w<nsym; w++)
 	{
 		if (synd[w] != 0)
 		{
 			break;
 		}
-		if (w = ag_PACKETSIZE - 1)
+		if (w = ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE - 1)
 		{
 			return;// keine fehler in der Message enthalten :-) hier kann man also gleich zurückgeben!
 		}
 	}
 	//fsynd = rs_forney_syndromes(synd, erase_pos, size); für die erkennung von löschungen zu gebrauchen; wobei synd dann durch fsynd ersetzt werden muss
 	//ich weiß aber nicht wie wir löschungen gescheid darstellen, da ja zB. keine minuszahlen möglich sind und alle 8 bit des char gebraucht werden
-	unsigned char err_pos[nsym];
+	unsigned char err_pos[ag_ERRORCORRECTIONSIZE];
+	memset(err_pos, 0, ag_ERRORCORRECTIONSIZE);
+
 	int err_pos_size = 0;
 	rs_find_errors(err_pos, synd, &err_pos_size);
 
@@ -323,17 +322,12 @@ void rs_correct_msg(unsigned char *msg_out)
 	{
 		return;//keine Fehler gefunden
 	}
-	rs_correct_errata(msg_out, synd, err_pos, ag_PACKETSIZE, err_pos_size);
-	rs_calc_syndromes(msg_out, synd, ag_PACKETSIZE);
-	//for(int x=0; x<size;x++)
-	//{
-	//	msg[x]=msg_out[x];		
-	//}
+	rs_correct_errata(msg_out, synd, err_pos, ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE, err_pos_size);
+	rs_calc_syndromes(msg_out, synd, ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE);
+
 
 	//Achtung msg hat immer noch die parity bits in größe nsym hinten drann
 }
-
-
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!decoder!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

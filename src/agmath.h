@@ -16,6 +16,6 @@ float ag_log(float);
 
 #define ag_BASE_FREQUENCY (20000.f)
 
-#define ag_PACKETSIZE (25)
-#define ag_ERRORCORRECTIONSIZE (5)
+#define ag_PACKETSIZE (60)
+#define ag_ERRORCORRECTIONSIZE (20)
 #define ag_PREAMBLESIZE 2

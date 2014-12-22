@@ -1,3 +1,3 @@
 #include "DataTypes.h"
 
-void FileSink_OnData(BoolPackage);
+void FileSink_OnData(UCharPackage);

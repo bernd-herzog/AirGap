@@ -3,15 +3,17 @@
 #include <stdlib.h>
 #include <math.h>
 #include "agmath.h"
+#include <string.h>
+#include "ReedSolomon.h"
 
-extern void(*Depacketizer_ReportData)(BoolPackage);
+extern void(*Depacketizer_ReportData)(UCharPackage);
 extern void Depacketizer_OnData(BoolPackage);
 extern void Depacketizer_Init();
 bool IsLastBufferPreamble();
 
 bool *Depacketizer_lastBuffer = 0;
 int Depacketizer_BitsToRead = 0;
-BoolPackage Depacketizer_ret;
+UCharPackage Depacketizer_ret;
 int Depacketizer_inPacket = 0;
 
 
@@ -30,6 +32,7 @@ void Depacketizer_OnData(BoolPackage data)
 		if (Depacketizer_BitsToRead == 0 && IsLastBufferPreamble() == true)
 		{
 			Depacketizer_BitsToRead = (ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE) * 8;
+			memset(Depacketizer_ret.data, 0, ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE);
 			Depacketizer_inPacket = 0;
 			positionInPacket++;
 		}
@@ -43,11 +46,23 @@ void Depacketizer_OnData(BoolPackage data)
 		//read from packet
 		for (; Depacketizer_BitsToRead > 0 && positionInPacket < data.count; Depacketizer_BitsToRead--, positionInPacket++, Depacketizer_inPacket++)
 		{
-			Depacketizer_ret.data[Depacketizer_inPacket] = data.data[positionInPacket];
+			int j = Depacketizer_inPacket % 8;
+
+			//for (int j = 0; j < 8; j++)
+			{
+				unsigned char bit = data.data[positionInPacket] == true ? 1 : 0;
+
+				Depacketizer_ret.data[Depacketizer_inPacket/8] |= bit << (7 - j);
+			}
+			//Depacketizer_ret.data[Depacketizer_inPacket] = data.data[positionInPacket];
 		}
 
 		if (Depacketizer_BitsToRead == 0)
 		{
+			rs_correct_msg(Depacketizer_ret.data);
+
+
+			//TODO: error correction
 			Depacketizer_ReportData(Depacketizer_ret);
 		}
 
@@ -85,6 +100,6 @@ void Depacketizer_Init()
 {
 	Depacketizer_lastBuffer = (bool *)calloc(8 * ag_PREAMBLESIZE, sizeof(bool));
 
-	Depacketizer_ret.count = (ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE) * 8;
-	Depacketizer_ret.data = (bool *)malloc(Depacketizer_ret.count * sizeof(bool));
+	Depacketizer_ret.count = (ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE);
+	Depacketizer_ret.data = (bool *)malloc(Depacketizer_ret.count * sizeof(unsigned char));
 }
