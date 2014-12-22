@@ -28,3 +28,7 @@ typedef struct {
 	int count;
 } BoolPackage;
 
+typedef struct {
+	unsigned char *data;
+	int count;
+} UCharPackage;

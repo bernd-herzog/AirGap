@@ -20,7 +20,7 @@ void Depacketizer_OnData(BoolPackage data)
 	int positionInPacket = 0;
 	
 	do{
-		for (int i = 0; i < 8 * 2 - 1; i++)
+		for (int i = 0; i < 8 * ag_ERRORCORRECTIONSIZE - 1; i++)
 		{
 			Depacketizer_lastBuffer[i] = Depacketizer_lastBuffer[i+1];
 		}
@@ -29,7 +29,7 @@ void Depacketizer_OnData(BoolPackage data)
 
 		if (Depacketizer_BitsToRead == 0 && IsLastBufferPreamble() == true)
 		{
-			Depacketizer_BitsToRead = ag_PACKETSIZE;
+			Depacketizer_BitsToRead = (ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE) * 8;
 			Depacketizer_inPacket = 0;
 			positionInPacket++;
 		}
@@ -57,20 +57,17 @@ void Depacketizer_OnData(BoolPackage data)
 
 bool IsLastBufferPreamble()
 {
-	Depacketizer_ret.count = ag_PACKETSIZE;
-	Depacketizer_ret.data = (bool *)malloc(Depacketizer_ret.count * sizeof(bool));
-
 	if (
-		Depacketizer_lastBuffer[0] != true
-		|| Depacketizer_lastBuffer[1] != true
-		|| Depacketizer_lastBuffer[2] != false
-		|| Depacketizer_lastBuffer[3] != false
-		|| Depacketizer_lastBuffer[4] != false
-		|| Depacketizer_lastBuffer[5] != true
-		|| Depacketizer_lastBuffer[6] != false
-		|| Depacketizer_lastBuffer[7] != false
-		|| Depacketizer_lastBuffer[8] != false
-		|| Depacketizer_lastBuffer[9] != false
+		   Depacketizer_lastBuffer[ 0] != true
+		|| Depacketizer_lastBuffer[ 1] != true
+		|| Depacketizer_lastBuffer[ 2] != false
+		|| Depacketizer_lastBuffer[ 3] != false
+		|| Depacketizer_lastBuffer[ 4] != false
+		|| Depacketizer_lastBuffer[ 5] != true
+		|| Depacketizer_lastBuffer[ 6] != false
+		|| Depacketizer_lastBuffer[ 7] != false
+		|| Depacketizer_lastBuffer[ 8] != false
+		|| Depacketizer_lastBuffer[ 9] != false
 		|| Depacketizer_lastBuffer[10] != false
 		|| Depacketizer_lastBuffer[11] != true
 		|| Depacketizer_lastBuffer[12] != false
@@ -86,5 +83,8 @@ bool IsLastBufferPreamble()
 
 void Depacketizer_Init()
 {
-	Depacketizer_lastBuffer = (bool *)calloc(8 * 2, sizeof(bool));
+	Depacketizer_lastBuffer = (bool *)calloc(8 * ag_PREAMBLESIZE, sizeof(bool));
+
+	Depacketizer_ret.count = (ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE) * 8;
+	Depacketizer_ret.data = (bool *)malloc(Depacketizer_ret.count * sizeof(bool));
 }

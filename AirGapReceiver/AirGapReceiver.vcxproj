@@ -87,6 +87,7 @@
     <ClCompile Include="..\src\main_receiver.c" />
     <ClCompile Include="..\src\Multiply.c" />
     <ClCompile Include="..\src\QuadraturDemodulator.c" />
+    <ClCompile Include="..\src\ReedSolomon.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\agmath.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="..\src\main.h" />
     <ClInclude Include="..\src\Multiply.h" />
     <ClInclude Include="..\src\QuadraturDemodulator.h" />
+    <ClInclude Include="..\src\ReedSolomon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

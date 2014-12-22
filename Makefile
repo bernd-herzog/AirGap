@@ -3,7 +3,7 @@ CFLAGS=-std=c99
 LIBS=-lm
 SRCDIR=src
 
-SHAREDMODULES = Multiply FirFilter agmath
+SHAREDMODULES = Multiply FirFilter agmath ReedSolomon
 SENDERMODULES =   main_sender   Packetizer   AudioSink_Alsa   FileSource BitToSymbol  Repeater      FrequencyModulator   $(SHAREDMODULES)
 RECEIVERMODULES = main_receiver Depacketizer AudioSource_Alsa FileSink   BinarySlicer ClockRecovery QuadraturDemodulator $(SHAREDMODULES)
 

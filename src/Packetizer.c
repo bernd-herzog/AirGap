@@ -1,58 +1,64 @@
 ﻿#include "Packetizer.h"
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include "agmath.h"
+#include "ReedSolomon.h"
 
 extern void(*Packetizer_ReportData)(BoolPackage);
-extern void Packetizer_OnData(BoolPackage);
+extern void Packetizer_OnData(UCharPackage);
 extern void Packetizer_Init();
 
-bool *Packetizer_Buffer = 0;
+unsigned char *Packetizer_Buffer;
+unsigned char *Packetizer_ErrorBuffer;
 int Packetizer_InBuffer = 0;
 BoolPackage Packetizer_ret;
 
-void Packetizer_OnData(BoolPackage data)
+void Packetizer_OnData(UCharPackage data)
 {
-	int position = 0;
-
-	while (Packetizer_InBuffer + data.count - position > ag_PACKETSIZE)
+	// foreach byte
+	for (int inputBufferPosition = 0; inputBufferPosition < data.count; inputBufferPosition++)
 	{
-		//send a packet
+		Packetizer_Buffer[Packetizer_InBuffer++] = data.data[inputBufferPosition];
+
+
+		if (Packetizer_InBuffer == ag_PACKETSIZE)
+		{
+			Packetizer_InBuffer = 0;
+			
+			memcpy(Packetizer_ErrorBuffer, Packetizer_Buffer, ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE);
 		
-		int inPacket = 0;
+			//add error infos
+			rs_encode_msg(Packetizer_ErrorBuffer);
 
-		//rest of buffer
-		for (; inPacket < Packetizer_InBuffer; inPacket++)
-		{
-			Packetizer_ret.data[inPacket + 16] = Packetizer_Buffer[inPacket];
-		}
-		Packetizer_InBuffer = 0;
-		
-		//from stream
-		for (; inPacket < ag_PACKETSIZE; inPacket++, position++)
-		{
-			Packetizer_ret.data[inPacket + 16] = data.data[position];
-		}
+			memcpy(Packetizer_Buffer + ag_PACKETSIZE, Packetizer_ErrorBuffer + ag_PACKETSIZE, ag_ERRORCORRECTIONSIZE);
 
-		//send it
-		Packetizer_ReportData(Packetizer_ret);
-	}
+			//convert to bits
+			for (int i = ag_PREAMBLESIZE; i < ag_PREAMBLESIZE + ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE; i++)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					if (((Packetizer_Buffer[i] >> j) & 0x01) == 0x01){
+						Packetizer_ret.data[i * 8 + (7 - j)] = true;
+					}
+					else{
+						Packetizer_ret.data[i * 8 + (7 - j)] = false;
+					}
+				}
+			}
 
-	if (data.count - position > 0)
-	{
-		//store rest
-		for (int inPacket = 0; data.count - position > 0; inPacket++, position++, Packetizer_InBuffer++)
-		{
-			Packetizer_Buffer[inPacket] = data.data[position];
+			//send buffer
+			Packetizer_ReportData(Packetizer_ret);
 		}
 	}
 }
 
 void Packetizer_Init()
 {
-	Packetizer_Buffer = (bool *)calloc(ag_PACKETSIZE, sizeof(bool));
+	Packetizer_Buffer = (unsigned char *)calloc(ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE, sizeof(unsigned char));
+	Packetizer_ErrorBuffer = (unsigned char *)calloc(ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE, sizeof(unsigned char));
 
-	Packetizer_ret.count = ag_PACKETSIZE + 8 * 2;
+	Packetizer_ret.count = (ag_PREAMBLESIZE + ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE) * 8;
 	Packetizer_ret.data = (bool *)malloc(Packetizer_ret.count * sizeof(bool));
 
 	Packetizer_ret.data[0] = true;
