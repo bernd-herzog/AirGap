@@ -92,18 +92,22 @@ void RunLoop()
 {
 	while (true)
 	{
-		//bool hasData = WaitForData();
+		AudioSource_DS_WaitForFreeBuffer();
 
-		//if (hasData)
-		{
-			AudioSource_DS_WaitForFreeBuffer();
+		ComplexPackage data = ReadData();
 
-			ComplexPackage data = ReadData();
+		clock_t waitdurstart, waitdurend;
+		float duration;
 
-			AudioSource_ReportData(data);
+		waitdurstart = clock();
 
-			free(data.data);
-		}
+		AudioSource_ReportData(data);
+
+		waitdurend = clock();
+		duration = ((float)(waitdurend - waitdurstart)) / CLOCKS_PER_SEC;
+		printf("[AS] Report took %f s\n", duration);
+
+		free(data.data);
 	}
 }
 
@@ -149,7 +153,7 @@ ComplexPackage ReadData()
 		float sampleValue = ((float)bufferData[i] / 0x8000);
 
 		ret.data[i].i = sampleValue;
-		ret.data[i].q =  sampleValue;
+		ret.data[i].q = sampleValue;
 	}
 
 	if (pData1)
@@ -171,17 +175,22 @@ void AudioSource_DS_WaitForFreeBuffer()
 {
 	while (true)
 	{
-		DWORD playPosition, writePosition;
+		DWORD capturePosition, readPosition;
 
 		//do we have to wait?
-		HRESULT result = g_captureBuffer->lpVtbl->GetCurrentPosition(g_captureBuffer, &playPosition, &writePosition);
+		HRESULT result = g_captureBuffer->lpVtbl->GetCurrentPosition(g_captureBuffer, &capturePosition, &readPosition);
 
-		DWORD part = writePosition % (BUFFER_SIZE / numbuffers);
-		DWORD buffer = writePosition / (BUFFER_SIZE / numbuffers);
+		DWORD captureBlockPosition = capturePosition / (BUFFER_SIZE / numbuffers);
+
+		//DWORD part = readPosition % (BUFFER_SIZE / numbuffers);
+		DWORD buffer = readPosition / (BUFFER_SIZE / numbuffers);
+
+		buffer = ((buffer - 1) % numbuffers);
 
 		DWORD ourBuffer = _ourPosition / (BUFFER_SIZE / numbuffers);
 
-		//printf("Wait: read in %d, read in %d\n", ourBuffer, buffer);
+		//printf("Wait: capture in %d, save read in %d, we have to read in %d\n",
+			//captureBlockPosition, buffer, ourBuffer);
 
 		if (ourBuffer == buffer)
 		{

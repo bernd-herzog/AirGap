@@ -21,7 +21,6 @@ void WriteToBuffer(Complex *, int);
 LPDIRECTSOUNDBUFFER soundBuffer = 0;
 HANDLE event;
 DWORD ourPosition = 0;
-bool soundOutputRunning = false;
 
 void AudioSink_OnData(ComplexPackage complexPackage)
 {
@@ -131,13 +130,11 @@ void Init()
 
 	result = soundBuffer->lpVtbl->Unlock(soundBuffer, buffer, bufferLen, buffer2, bufferLen2);
 	result = notify->lpVtbl->SetNotificationPositions(notify, numbuffers, positionNotify);
+	result = soundBuffer->lpVtbl->Play(soundBuffer, 0, 0, DSBPLAY_LOOPING);
 }
 
 void WaitForFreeBuffer()
 {
-	if (soundOutputRunning == false)
-		return;
-
 	while (true)
 	{
 		DWORD playPosition, writePosition;
@@ -205,7 +202,4 @@ void WriteToBuffer(Complex *source, int num)
 
 	ourPosition += num * 2;
 	ourPosition = ourPosition % BUFFER_SIZE;
-
-	result = soundBuffer->lpVtbl->Play(soundBuffer, 0, 0, DSBPLAY_LOOPING);
-	soundOutputRunning = true;
 }

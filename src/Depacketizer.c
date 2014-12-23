@@ -20,11 +20,11 @@ int Depacketizer_inPacket = 0;
 void Depacketizer_OnData(BoolPackage data)
 {
 	int positionInPacket = 0;
-	
+
 	do{
-		for (int i = 0; i < 8 * ag_ERRORCORRECTIONSIZE - 1; i++)
+		for (int i = 0; i < 8 * ag_PREAMBLESIZE - 1; i++)
 		{
-			Depacketizer_lastBuffer[i] = Depacketizer_lastBuffer[i+1];
+			Depacketizer_lastBuffer[i] = Depacketizer_lastBuffer[i + 1];
 		}
 
 		Depacketizer_lastBuffer[15] = data.data[positionInPacket];
@@ -42,47 +42,34 @@ void Depacketizer_OnData(BoolPackage data)
 			continue;
 		}
 
-
-		//read from packet
 		for (; Depacketizer_BitsToRead > 0 && positionInPacket < data.count; Depacketizer_BitsToRead--, positionInPacket++, Depacketizer_inPacket++)
 		{
 			int j = Depacketizer_inPacket % 8;
-
-			//for (int j = 0; j < 8; j++)
-			{
-				unsigned char bit = data.data[positionInPacket] == true ? 1 : 0;
-
-				Depacketizer_ret.data[Depacketizer_inPacket/8] |= bit << (7 - j);
-			}
-			//Depacketizer_ret.data[Depacketizer_inPacket] = data.data[positionInPacket];
+			unsigned char bit = data.data[positionInPacket] == true ? 1 : 0;
+			Depacketizer_ret.data[Depacketizer_inPacket / 8] |= bit << (7 - j);
 		}
 
 		if (Depacketizer_BitsToRead == 0)
 		{
 			rs_correct_msg(Depacketizer_ret.data);
-
-
-			//TODO: error correction
 			Depacketizer_ReportData(Depacketizer_ret);
 		}
 
-	} 
-	while (positionInPacket < data.count);
+	} while (positionInPacket < data.count);
 }
 
 bool IsLastBufferPreamble()
 {
-	if (
-		   Depacketizer_lastBuffer[ 0] != true
-		|| Depacketizer_lastBuffer[ 1] != true
-		|| Depacketizer_lastBuffer[ 2] != false
-		|| Depacketizer_lastBuffer[ 3] != false
-		|| Depacketizer_lastBuffer[ 4] != false
-		|| Depacketizer_lastBuffer[ 5] != true
-		|| Depacketizer_lastBuffer[ 6] != false
-		|| Depacketizer_lastBuffer[ 7] != false
-		|| Depacketizer_lastBuffer[ 8] != false
-		|| Depacketizer_lastBuffer[ 9] != false
+	if (   Depacketizer_lastBuffer[0] != true
+		|| Depacketizer_lastBuffer[1] != true
+		|| Depacketizer_lastBuffer[2] != false
+		|| Depacketizer_lastBuffer[3] != false
+		|| Depacketizer_lastBuffer[4] != false
+		|| Depacketizer_lastBuffer[5] != true
+		|| Depacketizer_lastBuffer[6] != false
+		|| Depacketizer_lastBuffer[7] != false
+		|| Depacketizer_lastBuffer[8] != false
+		|| Depacketizer_lastBuffer[9] != false
 		|| Depacketizer_lastBuffer[10] != false
 		|| Depacketizer_lastBuffer[11] != true
 		|| Depacketizer_lastBuffer[12] != false
@@ -100,6 +87,6 @@ void Depacketizer_Init()
 {
 	Depacketizer_lastBuffer = (bool *)calloc(8 * ag_PREAMBLESIZE, sizeof(bool));
 
-	Depacketizer_ret.count = (ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE);
-	Depacketizer_ret.data = (bool *)malloc(Depacketizer_ret.count * sizeof(unsigned char));
+	Depacketizer_ret.count = (ag_PACKETSIZE);
+	Depacketizer_ret.data = (bool *)malloc(ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE * sizeof(unsigned char));
 }

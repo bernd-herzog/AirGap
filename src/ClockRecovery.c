@@ -38,6 +38,11 @@ void ClockRecovery_OnData(FloatPackage packet)
 
 		_lastValues[ag_SAMPLES_PER_SYMBOL - 1] = sampleValue;
 
+		if (sampleValue * _lastValues[ag_SAMPLES_PER_SYMBOL - 2] < 0.f)
+		{
+			//printf("[CLock] null at: %d\n", _ClockRecovery_position);
+		}
+
 		average += sampleValue;
 		average /= ag_SAMPLES_PER_SYMBOL;
 
@@ -57,7 +62,7 @@ void ClockRecovery_OnData(FloatPackage packet)
 			{
 				int maxPosition = lastMaxPosition;
 
-				if (ag_abs(_lastAverages[lastMaxPosition]) < 0.7f)
+				if (ag_abs(_lastAverages[lastMaxPosition]) < barrier)
 				{
 
 					float maxValue = 0;
@@ -76,7 +81,7 @@ void ClockRecovery_OnData(FloatPackage packet)
 
 				float inValue = _lastAverages[maxPosition];
 
-				//printf("bit found at %d\n", maxPosition);
+				//printf("bit found at %d with %f\n", maxPosition, _lastAverages[maxPosition]);
 
 				ret.data[numByte++] = inValue;
 			}

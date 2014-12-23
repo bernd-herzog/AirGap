@@ -9,13 +9,13 @@ float ag_log(float);
 
 
 #define ag_PI (3.14159265358979323846f)
-#define ag_SAMPLERATE (48000)
-#define ag_SAMPLES_PER_SYMBOL (100)
+#define ag_SAMPLERATE (44100)
+#define ag_SAMPLES_PER_SYMBOL (50)
 #define ag_FREQUENCY_SHIFT (1000.f)
-#define ag_FREQUENCY_SHIFT_SYMBOLS (25)
+#define ag_FREQUENCY_SHIFT_SYMBOLS (8)
 
 #define ag_BASE_FREQUENCY (20000.f)
 
-#define ag_PACKETSIZE (60)
-#define ag_ERRORCORRECTIONSIZE (20)
-#define ag_PREAMBLESIZE 2
+#define ag_PACKETSIZE (30)
+#define ag_ERRORCORRECTIONSIZE (10)
+#define ag_PREAMBLESIZE (2)

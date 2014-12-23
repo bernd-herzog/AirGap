@@ -7,7 +7,7 @@ void FileSink_OnData(UCharPackage packet)
 {
 	char *filename = "sink.txt";
 	FILE *o_file;
-	o_file = fopen(filename, "ab");
+	//o_file = fopen(filename, "ab");
 
 
 	for (int i = 0; i < packet.count; i++)
@@ -16,10 +16,10 @@ void FileSink_OnData(UCharPackage packet)
 
 		printf("%c", byte);
 
-		fwrite(&byte, sizeof(char), 1, o_file);
+		//fwrite(&byte, sizeof(char), 1, o_file);
 	}
 
 	printf("\n");
 
-	fclose(o_file);
+	//fclose(o_file);
 }

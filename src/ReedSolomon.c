@@ -27,7 +27,7 @@ int gf_mul(int x, int y)
 
 void gf_poly_mul(unsigned char p[], unsigned char q[], int size_p, int size_q)
 {
-	unsigned char r[nsym+1];
+	unsigned char r[nsym+2];
 	int new_size = size_p + size_q - 1;
 	for (int b = 0; b < size_p + size_q - 1; b++)
 	{
@@ -328,75 +328,3 @@ void rs_correct_msg(unsigned char *msg_out)
 
 	//Achtung msg hat immer noch die parity bits in größe nsym hinten drann
 }
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!decoder!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-//int main()
-//{
-//	unsigned char chunk[50]={'t','e','s','t','!','t','e','s','t','!','t','e','s','t','!','t','e','s','t','!','t','e','s','t','!','t','e','s','t','!','t','e','s','t','!','t','e','s','t','!','t','e','s','t','!','t','e','s','t','!'};
-//	unsigned char parity[nsym];
-//	unsigned char data[50+nsym];
-//	rs_encode_msg(chunk, parity, 50);
-//	printf("Die Payload:\n");
-//	for(int d=0;d<50;d++)
-//	{
-//		printf("%x",chunk[d]);
-//		data[d]=chunk[d];
-//	}
-//	printf("\nDie parity-chars in hex:\n");
-//	for(int e=0;e<nsym;e++)
-//	{
-//		printf("%x",parity[e]);
-//		data[e+50]=parity[e];
-//	}
-//	printf("\nBeides Zusammen:\n");
-//	for(int d=0;d<50;d++)
-//	{
-//		printf("%x",chunk[d]);
-//	}
-//	for(int e=0;e<nsym;e++)
-//	{
-//		printf("%x",parity[e]);
-//	}
-//	for(int e=0;e<nsym;e++)
-//	{
-//		printf("\nparity[%i]: %x",e,parity[e]);
-//	}
-//	
-//	//bei 32 korrektur chars können wir bis zu 16 fehlerhafte chars korrigieren!!! Beweis:
-//	data[0]=111;
-//	data[2]=111;
-//	data[4]=111;
-//	data[5]=111;
-//	data[7]=111;
-//	
-//	data[10]=111;
-//	data[12]=111;
-//	data[14]=111;
-//	data[15]=111;
-//	data[17]=111;
-//	
-//	data[20]=111;
-//	data[22]=111;
-//	data[24]=111;
-//	data[25]=111;
-//	data[27]=111;	
-//	
-//	data[30]=111;
-//	
-//	
-//	rs_correct_msg(data, 50+nsym);
-//	
-//	printf("\nHier wird decoded: \n");
-//	for(int e=0;e<50;e++)
-//	{
-//		printf("Decoded[%i]: %c\n",e,data[e]);
-//	}
-//    return 0;
-//    
-//		
-//    
-//}
-
-

@@ -1,5 +1,6 @@
 ﻿#include "Packetizer.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include "agmath.h"
@@ -26,6 +27,9 @@ void Packetizer_OnData(UCharPackage data)
 		{
 			Packetizer_InBuffer = 0;
 			
+			Packetizer_Buffer[ag_PACKETSIZE] = 0;
+			printf("Sending Packet: '%s'\n", Packetizer_Buffer);
+
 			memcpy(Packetizer_ErrorBuffer, Packetizer_Buffer, ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE);
 		
 			//add error infos
@@ -38,7 +42,7 @@ void Packetizer_OnData(UCharPackage data)
 			{
 				for (int j = 0; j < 8; j++)
 				{
-					if (((Packetizer_Buffer[i] >> j) & 0x01) == 0x01){
+					if (((Packetizer_Buffer[i-2] >> j) & 0x01) == 0x01){
 						Packetizer_ret.data[i * 8 + (7 - j)] = true;
 					}
 					else{
