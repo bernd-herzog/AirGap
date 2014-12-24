@@ -10,7 +10,7 @@
 #include <time.h>
 
 #define numbuffers 8
-#define BUFFER_SIZE ((int)ag_SAMPLERATE*8)
+#define BUFFER_SIZE (ag_SAMPLERATE*8)
 
 extern void AudioSink_OnData(ComplexPackage);
 

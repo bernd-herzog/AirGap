@@ -32,6 +32,9 @@ void Multiply_OnData(ComplexPackage data)
 
 		ret.data[i].i = data.data[i].i * x_r - data.data[i].q * x_i;
 		ret.data[i].q = data.data[i].i * x_i + data.data[i].q * x_r;
+
+		if (ag_abs(ret.data[i].i) > 1.0f || ag_abs(ret.data[i].q) > 1.0)
+			printf("übersteuert");
 	}
 
 	Multiply_ReportData(ret);

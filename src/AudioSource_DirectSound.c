@@ -9,8 +9,8 @@
 #include <time.h>
 
 
-#define BUFFER_SIZE (1024*1024)
 #define numbuffers 8
+#define BUFFER_SIZE (ag_SAMPLERATE*8)
 
 extern void(*AudioSource_ReportData)(ComplexPackage);
 extern void AudioSource_Work();
