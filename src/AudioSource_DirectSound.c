@@ -105,7 +105,7 @@ void RunLoop()
 
 		waitdurend = clock();
 		duration = ((float)(waitdurend - waitdurstart)) / CLOCKS_PER_SEC;
-		printf("[AS] Report took %f s\n", duration);
+		//printf("[AS] Report took %f s\n", duration);
 
 		free(data.data);
 	}

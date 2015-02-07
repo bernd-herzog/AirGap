@@ -12,7 +12,7 @@ float ag_log(float);
 #define ag_SAMPLERATE (48000)
 #define ag_SAMPLES_PER_SYMBOL (200)
 #define ag_FREQUENCY_SHIFT (1000.f)
-#define ag_FREQUENCY_SHIFT_SYMBOLS (25)
+#define ag_FREQUENCY_SHIFT_SYMBOLS (8)
 
 #define ag_BASE_FREQUENCY (20000.f)
 

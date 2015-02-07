@@ -39,7 +39,7 @@ void QuadraturDemodulator_OnData(ComplexPackage packet)
 		ret.data[i] = retValue / (2 * ag_PI / ag_SAMPLERATE * ag_FREQUENCY_SHIFT);
 	}
 
-	printf("gain: %f\n", len / ret.count * 2000.f);
+	//printf("gain: %f\n", len / ret.count * 2000.f);
 
 	QuadraturDemodulator_ReportData(ret);
 
