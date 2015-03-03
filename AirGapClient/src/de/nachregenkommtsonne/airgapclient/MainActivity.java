@@ -1,12 +1,10 @@
 package de.nachregenkommtsonne.airgapclient;
 
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.AudioRecord.OnRecordPositionUpdateListener;
-import android.media.MediaRecorder;
 import android.media.MediaRecorder.AudioSource;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import android.os.Build;
 
 
 
@@ -76,53 +73,65 @@ public class MainActivity extends Activity {
         	final AudioRecord recorder = new AudioRecord(
 					AudioSource.MIC, 44100, AudioFormat.CHANNEL_IN_MONO,
 					AudioFormat.ENCODING_PCM_16BIT, AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT));
-			
+        	final int len = 4410;
         	//recorder.
 			recorder.setRecordPositionUpdateListener(new OnRecordPositionUpdateListener() {
 				
 				public void onPeriodicNotification(AudioRecord arg0) {
-					// TODO Auto-generated method stub
-					Log.e("audio", "onPeriodicNotification");
+					
+					short sData[] = new short[len];
+					int readSamples = recorder.read(sData, 0, len);
+					if (readSamples > 0){
+						Log.e("audio", "onPeriodicNotification");
+						AsyncTask<A, Integer, String> a = new AsyncTask<A, Integer, String>() {
+							
+							protected String doInBackground(A... params) {
+								//int len = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT);
+								short[] asData = params[0].getSamples();
+
+								//while (_running){
+									
+							        
+							        
+							        
+								//}
+
+								return "test";
+							}
+						};
+						
+						A b = new A(sData);
+						a.execute(b);
+
+					}
 				}
 				
-				public void onMarkerReached(AudioRecord arg0) {
-					// TODO Auto-generated method stub
-					Log.e("audio", "onMarkerReached");
-				}
+				public void onMarkerReached(AudioRecord arg0) {}
 			});
-			
-			int len = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT) * 64;
+
 			recorder.setPositionNotificationPeriod(len);
 			recorder.startRecording();
-			
-			AsyncTask<String, Integer, String> a = new AsyncTask<String, Integer, String>() {
-				
-				@Override
-				protected String doInBackground(String... params) {
-					int len = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT) * 64;
-					short sData[] = new short[len];
-
-					while (_running){
-						
-				        int numRead = recorder.read(sData, 0, len);
-				        
-				        
-					}
-
-					return "test";
-				}
-			};
-			
-			a.execute("test");
-			
-        	
         }
         
-        @Override
         public void onPause() {
-        	// TODO Auto-generated method stub
         	super.onPause();
         	_running = false;
+        }
+        
+        
+        class A{
+        	short[] samples;
+
+			public short[] getSamples() {
+				return samples;
+			}
+
+			public A(short[] samples) {
+				super();
+				this.samples = samples;
+			}
+
+       	
         }
     }
 }
