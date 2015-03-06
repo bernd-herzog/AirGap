@@ -5,6 +5,6 @@ include $(CLEAR_VARS)
 LOCAL_CFLAGS += -std=c99
 
 LOCAL_MODULE    := AirGap
-LOCAL_SRC_FILES := AirGap.cpp Depacketizer.c AudioSource_Alsa.c FileSink.c BinarySlicer.c ClockRecovery.c QuadraturDemodulator.c Multiply.c FirFilter.c agmath.c ReedSolomon.c
+LOCAL_SRC_FILES := AirGapMain.c Depacketizer.c MemorySink.c BinarySlicer.c ClockRecovery.c QuadraturDemodulator.c Multiply.c FirFilter.c agmath.c ReedSolomon.c
 
 include $(BUILD_SHARED_LIBRARY)

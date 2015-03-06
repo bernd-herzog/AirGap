@@ -20,6 +20,14 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
+	static
+	{
+		System.loadLibrary("AirGap");
+	}
+	
+	private native String getMessage(short[] samples);
+
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,31 +78,38 @@ public class MainActivity extends Activity {
         public void onResume() {
         	super.onResume();
         	_running = true;
-        	final AudioRecord recorder = new AudioRecord(
+         	final int len = 44100;
+            
+         	final AudioRecord recorder = new AudioRecord(
 					AudioSource.MIC, 44100, AudioFormat.CHANNEL_IN_MONO,
-					AudioFormat.ENCODING_PCM_16BIT, AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT));
-        	final int len = 4410;
+					AudioFormat.ENCODING_PCM_16BIT, len);
+        	
         	//recorder.
 			recorder.setRecordPositionUpdateListener(new OnRecordPositionUpdateListener() {
 				
 				public void onPeriodicNotification(AudioRecord arg0) {
+					//Log.e("audio", "onPeriodicNotification");
+					//Toast.makeText(getActivity(), "test", Toast.LENGTH_SHORT).show();
 					
-					short sData[] = new short[len];
-					int readSamples = recorder.read(sData, 0, len);
-					if (readSamples > 0){
-						Log.e("audio", "onPeriodicNotification");
+					//short sData[] = new short[len];
+					//int readSamples = recorder.read(sData, 0, len);
+
+					//Log.e("audio", "onPeriodicNotification");
+					
+					/*
+						if (readSamples > 0){
+//						Log.e("audio", "onPeriodicNotification");
 						AsyncTask<A, Integer, String> a = new AsyncTask<A, Integer, String>() {
 							
 							protected String doInBackground(A... params) {
 								//int len = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT);
 								short[] asData = params[0].getSamples();
 
-								//while (_running){
-									
-							        
-							        
-							        
-								//}
+								MainActivity ma = (MainActivity)getActivity();
+								
+								//String r = ma.messageFromNativeCode(asData);
+								
+								//Log.e("NDK", r);
 
 								return "test";
 							}
@@ -103,14 +118,47 @@ public class MainActivity extends Activity {
 						A b = new A(sData);
 						a.execute(b);
 
-					}
+					}*/
 				}
 				
-				public void onMarkerReached(AudioRecord arg0) {}
+				public void onMarkerReached(AudioRecord arg0) {
+					Toast.makeText(getActivity(), "onMarkerReached", Toast.LENGTH_SHORT).show();
+
+				}
 			});
 
 			recorder.setPositionNotificationPeriod(len);
+//			recorder.setNotificationMarkerPosition(len);
 			recorder.startRecording();
+			
+			
+			AsyncTask<String, Integer, String> a = new AsyncTask<String, Integer, String>() {
+				
+				protected String doInBackground(String... params) {
+					//int len = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT);
+					//short[] asData = params[0].getSamples();
+
+					//
+					
+					//
+					
+					//Log.e("NDK", r);
+					MainActivity ma = (MainActivity)getActivity();
+					short sData[] = new short[len];
+
+					while (true){
+						int readSamples = recorder.read(sData, 0, len);
+						//Short[] s = sData;
+						Log.e("pre NDK", "" + readSamples);
+						String r = ma.getMessage(sData);
+						Log.e("NDK", r);
+					}
+				}
+			};
+			
+			a.execute("");
+			
+			
         }
         
         public void onPause() {
