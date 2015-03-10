@@ -16,7 +16,6 @@ int Depacketizer_BitsToRead = 0;
 UCharPackage Depacketizer_ret;
 int Depacketizer_inPacket = 0;
 
-
 void Depacketizer_OnData(BoolPackage data)
 {
 	int positionInPacket = 0;
@@ -56,6 +55,7 @@ void Depacketizer_OnData(BoolPackage data)
 		}
 
 	} while (positionInPacket < data.count);
+
 }
 
 bool IsLastBufferPreamble()

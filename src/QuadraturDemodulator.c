@@ -12,6 +12,8 @@ float fabs2(float);
 
 void QuadraturDemodulator_OnData(ComplexPackage packet)
 {
+	START_TIMER;
+
 	static Complex _lastValue = { 0.0f, 1.0f };
 
 	FloatPackage ret;
@@ -40,6 +42,7 @@ void QuadraturDemodulator_OnData(ComplexPackage packet)
 	}
 
 	//printf("gain: %f\n", len / ret.count * 2000.f);
+	PRINT_TIMER("QuadraturDemodulator_OnData");
 
 	QuadraturDemodulator_ReportData(ret);
 

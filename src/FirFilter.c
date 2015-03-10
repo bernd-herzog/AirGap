@@ -18,6 +18,8 @@ int _bufferPosition = 0;
 
 void FirFilter_OnData(ComplexPackage packet)
 {
+	START_TIMER;
+
 	clock_t start = clock();
 
 	ComplexPackage ret;
@@ -44,6 +46,8 @@ void FirFilter_OnData(ComplexPackage packet)
 	float duration = ((float)(end - start)) / CLOCKS_PER_SEC;
 
 	//printf("FilFilter Calculated %d samples in %f s\n", packet.count, duration);
+
+	PRINT_TIMER("FirFilter_OnData");
 
 	FirFilter_ReportData(ret);
 	free(ret.data);

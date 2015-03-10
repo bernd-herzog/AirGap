@@ -2,12 +2,15 @@
 #include "DataTypes.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include "agmath.h"
 
 extern void(*BinarySlicer_ReportData)(BoolPackage);
 extern void BinarySlicer_OnData(FloatPackage);
 
 void BinarySlicer_OnData(FloatPackage packet)
 {
+	START_TIMER;
+
 	BoolPackage ret;
 	ret.count = packet.count;
 	ret.data = (bool *)malloc(ret.count * sizeof(bool));
@@ -22,6 +25,7 @@ void BinarySlicer_OnData(FloatPackage packet)
 		}
 	}
 
+	PRINT_TIMER("BinarySlicer_OnData");
 
 	BinarySlicer_ReportData(ret);
 	free(ret.data);

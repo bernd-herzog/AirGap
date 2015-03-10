@@ -13,6 +13,8 @@ float _Multiply_position = 0;
 
 void Multiply_OnData(ComplexPackage data)
 {
+	START_TIMER;
+
 	ComplexPackage ret;
 	ret.count = data.count;
 	ret.data = (Complex *)malloc(ret.count * sizeof(Complex));
@@ -36,6 +38,8 @@ void Multiply_OnData(ComplexPackage data)
 		//if (ag_abs(ret.data[i].i) > 1.0f || ag_abs(ret.data[i].q) > 1.0)
 			//printf("übersteuert");
 	}
+
+	PRINT_TIMER("Multiply_OnData");
 
 	Multiply_ReportData(ret);
 	free(ret.data);

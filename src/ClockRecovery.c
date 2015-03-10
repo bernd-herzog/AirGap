@@ -28,6 +28,8 @@ int _ClockRecovery_averagePosition = 0;
 
 void ClockRecovery_OnData(FloatPackage packet)
 {
+	START_TIMER;
+
 	int numBits = 0;
 	FloatPackage ret;
 	ret.data = (float *)calloc(packet.count, sizeof(float));
@@ -46,7 +48,7 @@ void ClockRecovery_OnData(FloatPackage packet)
 		if (lowerValue * upperValue < 0.f)
 		{
 			//possible bit detected
-			//verify
+			//verify 
 			float lowerAverage = 0.f;
 			float upperAverage = 0.f;
 
@@ -118,87 +120,12 @@ void ClockRecovery_OnData(FloatPackage packet)
 		_ClockRecovery_samplesSinceLastBit++;
 	}
 
-
 	ret.count = numBits;
+
+	PRINT_TIMER("ClockRecovery_OnData");
+
 	ClockRecovery_ReportData(ret);
 	free(ret.data);
-
-
-
-
-
-	//int numByte = 0;
-
-	//for (int j = 0; j < packet.count; j++)
-	//{
-	//	float average = 0.f;
-	//	for (int i = 0; i < ag_SAMPLES_PER_SYMBOL - 1; i++)
-	//	{
-	//		_lastValues[i] = _lastValues[i + 1];
-	//		average += _lastValues[i];
-	//	}
-
-	//	float sampleValue = packet.data[j];
-
-	//	_lastValues[ag_SAMPLES_PER_SYMBOL - 1] = sampleValue;
-
-	//	if (sampleValue * _lastValues[ag_SAMPLES_PER_SYMBOL - 2] < 0.f)
-	//	{
-	//		//printf("[CLock] null at: %d\n", _ClockRecovery_position);
-	//	}
-
-	//	average += sampleValue;
-	//	average /= ag_SAMPLES_PER_SYMBOL;
-
-	//	for (int i = 0; i < ag_SAMPLES_PER_SYMBOL - 1; i++)
-	//	{
-	//		_lastAverages[i] = _lastAverages[i + 1];
-	//	}
-
-	//	_lastAverages[ag_SAMPLES_PER_SYMBOL - 1] = average;
-	//	//printf("max: %f\n", average);
-
-	//	if (_collectedValues < ag_SAMPLES_PER_SYMBOL)
-	//		_collectedValues++;
-	//	else
-	//	{
-	//		if (_ClockRecovery_position == 0)
-	//		{
-	//			int maxPosition = lastMaxPosition;
-
-	//			if (ag_abs(_lastAverages[lastMaxPosition]) < barrier)
-	//			{
-
-	//				float maxValue = 0;
-
-	//				for (int i = 0; i < ag_SAMPLES_PER_SYMBOL; i++)
-	//				{
-	//					float absValue = ag_abs(_lastAverages[i]);
-	//					if (absValue > maxValue)
-	//					{
-	//						maxValue = absValue;
-	//						maxPosition = i;
-	//					}
-	//				}
-	//				lastMaxPosition = maxPosition;
-	//			}
-
-	//			float inValue = _lastAverages[maxPosition];
-
-	//			//printf("bit found at %d with %f\n", maxPosition, _lastAverages[maxPosition]);
-
-	//			ret.data[numByte++] = inValue;
-	//		}
-	//	}
-
-	//	_ClockRecovery_position = (_ClockRecovery_position + 1) % ag_SAMPLES_PER_SYMBOL;
-	//}
-
-
-	//ret.count = numByte;
-
-	//ClockRecovery_ReportData(ret);
-	//free(ret.data);
 }
 
 void ClockRecovery_Init()
