@@ -22,6 +22,7 @@
 							<targetPlatform binaryParser="org.eclipse.cdt.core.ELF" id="com.android.targetPlatform.265231048" isAbstract="false" superClass="com.android.targetPlatform"/>
 							<builder arguments="NDK_DEBUG=1" command="ndk-build" id="com.android.builder.1655431932" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Android Builder" superClass="com.android.builder"/>
 							<tool id="com.android.gcc.compiler.1715720135" name="Android GCC Compiler" superClass="com.android.gcc.compiler">
+								<option id="com.android.gcc.option.includePath.1155810976" superClass="com.android.gcc.option.includePath" valueType="includePath"/>
 								<inputType id="com.android.gcc.inputType.762085879" superClass="com.android.gcc.inputType"/>
 							</tool>
 						</toolChain>
