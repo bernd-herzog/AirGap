@@ -6,6 +6,7 @@
 #include <string.h>
 #include "ReedSolomon.h"
 
+
 extern void(*Depacketizer_ReportData)(UCharPackage);
 extern void Depacketizer_OnData(BoolPackage);
 extern void Depacketizer_Init();
@@ -88,5 +89,5 @@ void Depacketizer_Init()
 	Depacketizer_lastBuffer = (bool *)calloc(8 * ag_PREAMBLESIZE, sizeof(bool));
 
 	Depacketizer_ret.count = (ag_PACKETSIZE);
-	Depacketizer_ret.data = (bool *)malloc(ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE * sizeof(unsigned char));
+	Depacketizer_ret.data = (unsigned char *)malloc(ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE * sizeof(unsigned char));
 }

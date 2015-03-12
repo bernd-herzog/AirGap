@@ -1,20 +1,21 @@
 #include <jni.h>
-#include "main.h"
 
+extern "C"{
+#include "main.h"
 #include "MemorySink.h"
-#include "FileSink.h"
 #include "BinarySlicer.h"
 #include "QuadraturDemodulator.h"
 #include "ClockRecovery.h"
 #include "Multiply.h"
 #include "FirFilter.h"
 #include "Depacketizer.h"
-
-#include <stdbool.h>
 #include "agmath.h"
+}
+#include <stdbool.h>
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 /*extern "C"
 {
@@ -23,11 +24,16 @@
 void InitReceiver();
 int once = 0;
 
-JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_MainActivity_getMessage (JNIEnv * env, jobject jObj, jshortArray samples)
-{
-	int len = (*env)->GetArrayLength(env, samples);
+extern "C"{
+	JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_MainActivity_getMessage (JNIEnv * env, jobject jObj, jshortArray samples);
+}
 
-	jshort *sampl = (*env)->GetShortArrayElements(env, samples, 0);
+extern "C" JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_MainActivity_getMessage (JNIEnv * env, jobject jObj, jshortArray samples)
+{
+
+	int len = env->GetArrayLength(samples);
+
+	jshort *sampl = env->GetShortArrayElements(samples, 0);
 
 	if (once == 0){
 		once = 1;
@@ -47,11 +53,15 @@ JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_MainActivity_
 		p.data[i].q = sampleValue;
 	}
 
+	env->ReleaseShortArrayElements(samples, sampl, 0);
+
+	MemorySink_Clear();
 	Multiply_OnData(p);
 
-	MemorySink_data[MemorySink_len] = 0;
+	char *data = MemorySink_GetMemory();
 
-	return (*env)->NewStringUTF(env, MemorySink_data);
+	return env->NewStringUTF(data);
+	//return env->NewStringUTF("FF");
 }
 
 void InitReceiver(){
@@ -66,8 +76,4 @@ void InitReceiver(){
 	CONNECT(ClockRecovery, BinarySlicer);
 	CONNECT(BinarySlicer, Depacketizer);
 	CONNECT(Depacketizer, MemorySink);
-
-	MemorySink_len = 0;
-	MemorySink_data = 0;
-
 }

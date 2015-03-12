@@ -3,10 +3,12 @@
 #include <stdlib.h>
 
 extern void MemorySink_OnData(UCharPackage);
+extern char *MemorySink_GetMemory();
+extern void MemorySink_Clear();
 
 int MemorySink_memsize = 0;
-extern int MemorySink_len;
-extern char *MemorySink_data;
+int MemorySink_len = 0;
+char *MemorySink_data = 0;
 
 void MemorySink_OnData(UCharPackage packet)
 {
@@ -22,4 +24,20 @@ void MemorySink_OnData(UCharPackage packet)
 
 		MemorySink_data[i] = byte;
 	}
+	MemorySink_len = packet.count;
+	MemorySink_data[MemorySink_len] = 0;
+}
+
+void MemorySink_Clear()
+{
+	if (MemorySink_data != 0)
+	{
+		MemorySink_len = 0;
+		MemorySink_data[MemorySink_len] = 0;
+	}
+}
+
+char *MemorySink_GetMemory()
+{
+	return MemorySink_data;
 }
