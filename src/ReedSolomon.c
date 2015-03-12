@@ -211,7 +211,7 @@ void rs_find_errors(unsigned char err_pos[], unsigned char synd[], int *err_pos_
 
 void gf_poly_eval(unsigned char msg[], int x, unsigned char synd[], int size, int pos)
 {
-	unsigned char *local = calloc(size, sizeof(unsigned char));
+	unsigned char *local = (unsigned char *)calloc(size, sizeof(unsigned char));
 	local[0] = msg[0];
 	for (int i = 1; i < size; i++)
 	{

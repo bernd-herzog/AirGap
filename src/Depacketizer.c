@@ -55,7 +55,6 @@ void Depacketizer_OnData(BoolPackage data)
 		}
 
 	} while (positionInPacket < data.count);
-
 }
 
 bool IsLastBufferPreamble()
@@ -88,5 +87,5 @@ void Depacketizer_Init()
 	Depacketizer_lastBuffer = (bool *)calloc(8 * ag_PREAMBLESIZE, sizeof(bool));
 
 	Depacketizer_ret.count = (ag_PACKETSIZE);
-	Depacketizer_ret.data = (bool *)malloc(ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE * sizeof(unsigned char));
+	Depacketizer_ret.data = (unsigned char *)malloc(ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE * sizeof(unsigned char));
 }
