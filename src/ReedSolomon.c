@@ -125,7 +125,7 @@ void gf_poly_scale(unsigned char p[], int x, int p_size, unsigned char out[])
 	}
 }
 
-void rs_find_errors(unsigned char err_pos[], unsigned char synd[], int *err_pos_size) //Berlekamp-Massey algorithmus
+int rs_find_errors(unsigned char err_pos[], unsigned char synd[], int *err_pos_size) //Berlekamp-Massey algorithmus
 {
 	unsigned char err_poly[256]; //!!!!!!!!!!!!!!!!!!Länge muss noch bestimmt werden!!!!!!!!!!!!!!!!!!!!!
 	unsigned char old_poly[256]; //!!!!!!!!!!!!!!!!!!Länge muss noch bestimmt werden!!!!!!!!!!!!!!!!!!!!!
@@ -194,6 +194,7 @@ void rs_find_errors(unsigned char err_pos[], unsigned char synd[], int *err_pos_
 	int count = 0;
 	if (errs * 2 > nsym)
 	{
+		return 1;
 		//Es sind zu viele Fehler zum Korrigieren!!! Hier ein abbruch rein!!!!!!!!!!!!!!!!!!!!!!!!
 	}
 	unsigned char gf_poly_eval_out[ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE];
@@ -206,6 +207,8 @@ void rs_find_errors(unsigned char err_pos[], unsigned char synd[], int *err_pos_
 			count++;
 		}
 	}
+
+	return 0;
 }
 
 
@@ -291,7 +294,7 @@ void rs_correct_errata(unsigned char msg[], unsigned char synd[], unsigned char 
 	free(s);
 }
 
-void rs_correct_msg(unsigned char *msg_out)
+int rs_correct_msg(unsigned char *msg_out)
 {
 	//unsigned char msg_out[size];
 	//unsigned char erase_pos[nsym]; //man könnte noch gelöschte symbole erkennung hinzufügen (wenn man weiß, das gelöscht wurde dann kann man bis zu nsym gelöschte chars rekonstruieren), ist aber glaube ich etwas tricky
@@ -307,7 +310,7 @@ void rs_correct_msg(unsigned char *msg_out)
 		}
 		if (w = ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE - 1)
 		{
-			return;// keine fehler in der Message enthalten :-) hier kann man also gleich zurückgeben!
+			return 0; // keine fehler in der Message enthalten :-) hier kann man also gleich zurückgeben!
 		}
 	}
 	//fsynd = rs_forney_syndromes(synd, erase_pos, size); für die erkennung von löschungen zu gebrauchen; wobei synd dann durch fsynd ersetzt werden muss
@@ -316,15 +319,22 @@ void rs_correct_msg(unsigned char *msg_out)
 	memset(err_pos, 0, ag_ERRORCORRECTIONSIZE);
 
 	int err_pos_size = 0;
-	rs_find_errors(err_pos, synd, &err_pos_size);
+	int error_code = rs_find_errors(err_pos, synd, &err_pos_size);
+
+	if (error_code == 1)
+	{
+		return 1;
+	}
+
 
 	if (err_pos_size == 0)
 	{
-		return;//keine Fehler gefunden
+		return 0; //keine Fehler gefunden
 	}
 	rs_correct_errata(msg_out, synd, err_pos, ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE, err_pos_size);
 	rs_calc_syndromes(msg_out, synd, ag_PACKETSIZE + ag_ERRORCORRECTIONSIZE);
 
 
 	//Achtung msg hat immer noch die parity bits in größe nsym hinten drann
+	return 0;
 }

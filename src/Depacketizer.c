@@ -9,12 +9,20 @@
 extern void(*Depacketizer_ReportData)(UCharPackage);
 extern void Depacketizer_OnData(BoolPackage);
 extern void Depacketizer_Init();
+extern int Depacketizer_Stable_Connection();
+
 bool IsLastBufferPreamble();
 
 bool *Depacketizer_lastBuffer = 0;
 int Depacketizer_BitsToRead = 0;
 UCharPackage Depacketizer_ret;
 int Depacketizer_inPacket = 0;
+
+int Depacketizer_stable_connection = 0;
+
+int Depacketizer_Stable_Connection(){
+	return Depacketizer_stable_connection;
+}
 
 void Depacketizer_OnData(BoolPackage data)
 {
@@ -50,7 +58,15 @@ void Depacketizer_OnData(BoolPackage data)
 
 		if (Depacketizer_BitsToRead == 0)
 		{
-			rs_correct_msg(Depacketizer_ret.data);
+			int error_code = rs_correct_msg(Depacketizer_ret.data);
+			if (error_code == 0) //success
+			{
+				Depacketizer_stable_connection = 1;
+			}
+			else{ // not repairable
+				Depacketizer_stable_connection = 0;
+			}
+
 			Depacketizer_ReportData(Depacketizer_ret);
 		}
 

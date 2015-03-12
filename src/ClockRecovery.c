@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "agmath.h"
 #include <string.h>
+#include "Depacketizer.h"
 
 extern void(*ClockRecovery_ReportData)(FloatPackage);
 extern void ClockRecovery_OnData(FloatPackage);
@@ -101,7 +102,8 @@ void ClockRecovery_OnData(FloatPackage packet)
 					}
 				}
 
-				_ClockRecovery_averagePosition = maxPosition;
+				if (Depacketizer_Stable_Connection() == 1)
+					_ClockRecovery_averagePosition = maxPosition;
 
 			}
 		}
