@@ -52,4 +52,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 		<nature>org.eclipse.cdt.codan.core.codanNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>jni-src</name>
+			<type>2</type>
+			<location>C:/Users/j39f3fs/Entwicklung/airgap/src</location>
+		</link>
+	</linkedResources>
 </projectDescription>

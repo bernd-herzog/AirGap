@@ -39,12 +39,12 @@ public class MainActivity extends Activity {
 		ScrollView scrollView;
 		ProgressBar progressBar;
 		SeekBar seekBar;
-		StringBuilder sb;
+		
 		int maxValue = 0;
 		float amp = 1.0f;
 
 		public PlaceholderFragment() {
-			sb = new StringBuilder();
+			
 		}
 
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,6 +107,9 @@ public class MainActivity extends Activity {
 
 						// Log.e("pre NDK", "" + readSamples);
 						String r = ma.getMessage(sData);
+						
+						r = r.replace("\r", "\n");
+						
 						// if (r != null && r.length() > 0){
 						this.publishProgress(r);
 						// }
@@ -123,9 +126,8 @@ public class MainActivity extends Activity {
 					if (values[0] == null || values[0].length() == 0)
 						return;
 
-					sb.append(values[0]);
-					textView.setText(sb.toString());
-					scrollView.fullScroll(View.FOCUS_DOWN);
+					textView.setText(values[0]);
+					//scrollView.fullScroll(View.FOCUS_DOWN);
 				}
 			};
 
