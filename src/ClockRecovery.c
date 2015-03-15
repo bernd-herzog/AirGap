@@ -102,7 +102,7 @@ void ClockRecovery_OnData(FloatPackage packet)
 					}
 				}
 
-				if (Depacketizer_Stable_Connection() == 1)
+				//if (Depacketizer_Stable_Connection() == 1)
 					_ClockRecovery_averagePosition = maxPosition;
 
 			}

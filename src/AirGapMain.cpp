@@ -28,7 +28,7 @@ extern "C"{
 	JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_MainActivity_getMessage (JNIEnv * env, jobject jObj, jshortArray samples);
 }
 
-extern "C" JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_MainActivity_getMessage (JNIEnv * env, jobject jObj, jshortArray samples)
+JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_MainActivity_getMessage (JNIEnv * env, jobject jObj, jshortArray samples)
 {
 
 	int len = env->GetArrayLength(samples);
@@ -55,7 +55,6 @@ extern "C" JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_Ma
 
 	env->ReleaseShortArrayElements(samples, sampl, 0);
 
-	MemorySink_Clear();
 	Multiply_OnData(p);
 
 	char *data = MemorySink_GetMemory();
@@ -65,6 +64,7 @@ extern "C" JNIEXPORT jstring JNICALL Java_de_nachregenkommtsonne_airgapclient_Ma
 }
 
 void InitReceiver(){
+	MemorySink_Init();
 	FirFilter_InitLowPass();
 	Multiply_SetFrequency(-ag_BASE_FREQUENCY);
 	ClockRecovery_Init();

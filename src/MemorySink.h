@@ -2,8 +2,6 @@
 
 void MemorySink_OnData(UCharPackage);
 char *MemorySink_GetMemory();
-void MemorySink_Clear();
+void MemorySink_Init();
 
 
-extern int MemorySink_len;
-extern char *MemorySink_data;

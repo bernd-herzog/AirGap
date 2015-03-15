@@ -59,15 +59,15 @@ void Depacketizer_OnData(BoolPackage data)
 		if (Depacketizer_BitsToRead == 0)
 		{
 			int error_code = rs_correct_msg(Depacketizer_ret.data);
+			//error_code = 0;
 			if (error_code == 0) //success
 			{
 				Depacketizer_stable_connection = 1;
+				Depacketizer_ReportData(Depacketizer_ret);
 			}
 			else{ // not repairable
 				Depacketizer_stable_connection = 0;
 			}
-
-			Depacketizer_ReportData(Depacketizer_ret);
 		}
 
 	} while (positionInPacket < data.count);

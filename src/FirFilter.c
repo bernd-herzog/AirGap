@@ -109,9 +109,9 @@ void FirFilter_InitGaussian()
 void FirFilter_InitLowPass()
 {
 	// variables
-	float maxAttenuation = 40.f; //for hamming
-	float transitionWidth = 200.0f;
-	float cutoffFrequency = ag_FREQUENCY_SHIFT + 200.0f;
+	float maxAttenuation = 10.f; //for hamming
+	float transitionWidth = 400.0f;
+	float cutoffFrequency = ag_FREQUENCY_SHIFT + 400.0f;
 	float gain = 1.0f;
 
 	// calculate num taps for hamming WINDOW

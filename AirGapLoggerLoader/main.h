@@ -10,3 +10,5 @@
 
 #include <shellapi.h>
 #include <psapi.h>
+
+#define CONNECT(source ,target) source ## _ ## ReportData = &target ## _ ## OnData
